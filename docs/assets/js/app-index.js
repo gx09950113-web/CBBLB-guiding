@@ -1,59 +1,78 @@
 (() => {
+  const BGM_KEY = "WTTF_ACTIVE_BGM";
+  const CURRENT_BGM = "index";
+
   const audio = document.getElementById("bgm");
   const muteBtn = document.getElementById("muteBtn");
   const hint = document.getElementById("autoplayHint");
 
-  // 你說「預設播放音量 15db」
-  // Web Audio/HTMLAudio 的 volume 是 0~1 線性值，不是 dB。
-  // 這裡用 0.15 當作「15% 音量」的合理對應（等同於偏小聲）。
+  if (!audio) return;
+
+  // 預設音量
   audio.volume = 0.15;
 
   function setMuted(isMuted) {
     audio.muted = isMuted;
-    muteBtn.setAttribute("aria-pressed", String(isMuted));
-    muteBtn.textContent = isMuted ? "🔇 聲音：關" : "🔊 聲音：開";
+    if (muteBtn) {
+      muteBtn.setAttribute("aria-pressed", String(isMuted));
+      muteBtn.textContent = isMuted ? "🔇 聲音：關" : "🔊 聲音：開";
+    }
   }
 
-  // 預設不靜音，嘗試自動播放
+  // 預設不靜音
   setMuted(false);
 
-  async function tryAutoplay() {
+  function shouldPlayHere() {
+    const active = sessionStorage.getItem(BGM_KEY);
+    // 如果目前 session 指定的是別頁音樂（例如 members），就不要在 index 播
+    return !(active && active !== CURRENT_BGM);
+  }
+
+  async function tryPlay() {
+    if (!shouldPlayHere()) {
+      // 其他頁正在當 active，index 不介入
+      audio.pause();
+      if (hint) hint.hidden = true;
+      return;
+    }
+
+    // 宣告：現在 active 是 index（只有確定要播時才寫）
+    sessionStorage.setItem(BGM_KEY, CURRENT_BGM);
+
     try {
       await audio.play();
-      hint.hidden = true;
+      if (hint) hint.hidden = true;
     } catch (e) {
-      // 自動播放被擋住：顯示提示
-      hint.hidden = false;
+      if (hint) hint.hidden = false;
     }
   }
 
-  // 點按靜音按鈕：切換靜音；若還沒播放，順便嘗試播放
-  muteBtn.addEventListener("click", async () => {
-    const nextMuted = !audio.muted;
-    setMuted(nextMuted);
+  // mute 按鈕
+  if (muteBtn) {
+    muteBtn.addEventListener("click", async () => {
+      setMuted(!audio.muted);
 
-    // 如果使用者剛互動，通常就允許播放了
-    try {
-      await audio.play();
-      hint.hidden = true;
-    } catch (e) {
-      // 仍被擋也沒關係
-      hint.hidden = false;
-    }
+      // 使用者互動後通常可以播放
+      await tryPlay();
+    });
+  }
+
+  // 任何一次互動也嘗試解鎖播放（手機常用）
+  document.addEventListener(
+    "pointerdown",
+    async () => {
+      if (audio.paused) await tryPlay();
+    },
+    { once: true }
+  );
+
+  // ✅ 離開頁面（切分頁/切頁）就停，避免重疊
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) audio.pause();
+    // 回到頁面時：看 shouldPlayHere 再決定要不要續播
+    else tryPlay();
   });
 
-  // 使用者點任何地方，也嘗試解鎖播放（更符合手機實際狀況）
-  document.addEventListener("pointerdown", async () => {
-    if (audio.paused) {
-      try {
-        await audio.play();
-        hint.hidden = true;
-      } catch (e) {
-        hint.hidden = false;
-      }
-    }
-  }, { once: true });
-
-  // 開始嘗試自動播放
-  tryAutoplay();
+  // 初次嘗試播放
+  tryPlay();
 })();
