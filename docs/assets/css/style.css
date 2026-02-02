@@ -1,8 +1,14 @@
+/* =====================================================================
+   錢包比臉薄 - 全站 style.css（完整可覆蓋版）
+   位置：docs/assets/css/style.css
+   依賴資源：
+   - 字體：docs/assets/fonts/ThePeakFontBeta_V0_102.ttf
+   - LOGO：docs/assets/img/WTTF-LOGO.png
+   - 首頁背景：docs/assets/img/homepage%20bg.png  (注意：檔名含字面 %20)
+===================================================================== */
+
 /* =========================
-   Font: ThePeakFontBeta
-   - style.css 位於 assets/css/
-   - 字體位於 assets/fonts/
-   => 相對路徑：../fonts/xxx.ttf
+   Font
 ========================= */
 @font-face{
   font-family: "ThePeakFontBeta";
@@ -13,7 +19,7 @@
 }
 
 /* =========================
-   Global / Theme
+   Theme Tokens
 ========================= */
 :root{
   --overlay: rgba(0,0,0,.58);
@@ -25,15 +31,18 @@
   --border: rgba(255,255,255,.18);
   --shadow: 0 14px 44px rgba(0,0,0,.42);
 
-  /* 按鈕修正：加亮底色 + 更強對比 */
-  --btn-bg: rgba(255,255,255,.14);
-  --btn-bg-hover: rgba(255,255,255,.22);
-  --btn-border: rgba(255,255,255,.28);
-  --btn-border-hover: rgba(255,255,255,.38);
+  /* Button contrast */
+  --btn-bg: rgba(255,255,255,.16);
+  --btn-bg-hover: rgba(255,255,255,.28);
+  --btn-border: rgba(255,255,255,.30);
+  --btn-border-hover: rgba(255,255,255,.46);
 
   --radius: 18px;
 }
 
+/* =========================
+   Base Reset
+========================= */
 *{ box-sizing: border-box; }
 html, body{ height: 100%; }
 html, body{ overflow-x: hidden; }
@@ -41,26 +50,27 @@ html, body{ overflow-x: hidden; }
 body{
   margin: 0;
 
-  /* ✅ 全站指定字體（優先 ThePeakFontBeta） */
   font-family: "ThePeakFontBeta",
     ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
 
   color: var(--text);
-
-  /* 有些自製字體中文可能比較擠，給一點呼吸 */
   letter-spacing: .2px;
+  -webkit-text-size-adjust: 100%;
 }
 
-/* =========================
+/* =====================================================================
    Page Backgrounds
-   - 首頁專用 (body.page-home)
-   - 修正：用引號包住路徑，確保 %20 能解析
-========================= */
+   重點：你的檔名真的叫 homepage%20bg.png（字面 %20）
+   所以 URL 必須寫 %2520 才會解碼後變成 %20
+===================================================================== */
 body.page-home{
+  /* 用 !important 抗其它 style 覆蓋背景 */
   background:
     linear-gradient(var(--overlay), var(--overlay)),
-    url("../img/homepage%20bg.png") center / cover no-repeat fixed;
+    url("../img/homepage%2520bg.png") center / cover no-repeat fixed !important;
+
+  background-color: #000; /* 背景圖載不到時的保底 */
 }
 
 /* =========================
@@ -73,6 +83,8 @@ body.page-home{
 
   background: rgba(0,0,0,.18);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
   border-bottom: 1px solid var(--border);
 }
 
@@ -80,37 +92,46 @@ body.page-home{
   display: block;
   margin: 0 auto;
 
-  /* ✅ 等比例縮放，避免 22 吋螢幕橫向捲動 */
+  /* 保持原比例顯示 */
   width: auto;
   height: auto;
 
-  /* 22 吋(1920)不需左右滑：限制最大寬度 */
+  /* 22 吋 1920 寬度不需左右滑：限制最大寬 */
   max-width: min(1800px, 96vw);
 
   object-fit: contain;
   filter: drop-shadow(0 14px 32px rgba(0,0,0,.50));
 }
 
-/* 靜音按鈕：固定右上角 */
+/* 靜音按鈕：右上角固定 */
 .top-actions{
   position: absolute;
   top: 16px;
   right: 18px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 /* =========================
-   Buttons
+   Buttons (General)
 ========================= */
 .btn{
+  appearance: none;
   border: 1px solid var(--btn-border);
   background: var(--btn-bg);
   color: var(--text);
+
   padding: 10px 14px;
   border-radius: 999px;
+
   cursor: pointer;
   user-select: none;
   line-height: 1;
+
   box-shadow: 0 10px 26px rgba(0,0,0,.22);
+  transition: transform .08s ease, background .12s ease, border-color .12s ease;
 }
 
 .btn:hover{
@@ -120,13 +141,19 @@ body.page-home{
 
 .btn:active{ transform: translateY(1px); }
 
+.btn:focus-visible{
+  outline: 2px solid rgba(255,255,255,.55);
+  outline-offset: 2px;
+}
+
+/* Ghost 版本：更深底色避免跟背景融在一起 */
 .btn-ghost{
-  background: rgba(0,0,0,.28);
-  border-color: rgba(255,255,255,.30);
+  background: rgba(0,0,0,.30);
+  border-color: rgba(255,255,255,.34);
 }
 .btn-ghost:hover{
-  background: rgba(0,0,0,.38);
-  border-color: rgba(255,255,255,.42);
+  background: rgba(0,0,0,.42);
+  border-color: rgba(255,255,255,.50);
 }
 
 /* =========================
@@ -183,7 +210,7 @@ body.page-home{
 
 .hint{
   margin-top: 14px;
-  color: rgba(255,255,255,.90);
+  color: rgba(255,255,255,.92);
   background: rgba(255,193,7,.14);
   border: 1px solid rgba(255,193,7,.40);
   padding: 10px 12px;
@@ -192,7 +219,6 @@ body.page-home{
 
 /* =========================
    Navigation Grid
-   - 修正按鈕與背景重合：加更亮底色＋清楚 hover
 ========================= */
 .navgrid{
   margin-top: 18px;
@@ -210,10 +236,11 @@ body.page-home{
   color: var(--text);
 
   border: 1px solid var(--btn-border);
-  background: rgba(255,255,255,.16);
-  border-radius: 14px;
+  background: rgba(255,255,255,.18);
 
+  border-radius: 14px;
   padding: 14px 12px;
+
   font-weight: 750;
   letter-spacing: .4px;
 
@@ -222,12 +249,17 @@ body.page-home{
 }
 
 .navbtn:hover{
-  background: rgba(255,255,255,.26);
+  background: rgba(255,255,255,.30);
   border-color: var(--btn-border-hover);
 }
 
 .navbtn:active{
   transform: translateY(1px);
+}
+
+.navbtn:focus-visible{
+  outline: 2px solid rgba(255,255,255,.55);
+  outline-offset: 2px;
 }
 
 /* =========================
@@ -245,7 +277,7 @@ body.page-home{
 @media (max-width: 768px){
   /* 手機背景 fixed 可能卡頓 */
   body.page-home{
-    background-attachment: scroll;
+    background-attachment: scroll !important;
   }
 
   .top-actions{
