@@ -2,12 +2,13 @@
    WTTF - style.css（完整版・可覆蓋・2026-02）
    ✅ Home：navgrid 在 hero 上方（CSS 不改 HTML）
    ✅ Buttons：hover 背景變暗 + 紅色光暈 pulse（文字不變色、一直閃）
-   ✅ Members（配合你提供的 HTML class 名）：
-      - LOGO 置中置頂（fixed）
-      - 社主/副社主圖 215x386：完整呈現（不裁切、不變形）
-      - 「活躍成員」固定在 leaders 下方、成員列表上方（不跟著滾動）
-      - 分類浮框總寬固定 772px；展開高度隨內容自適應
-   ✅ Events：保留（若你有 events 頁）
+   ✅ Members（對應你的 members.html）：
+      - LOGO（1587x2245）原比例、置中置頂（fixed）
+      - 社主/副社主：左右並列，置中固定於 LOGO 下方
+      - leaders 圖（215x386）完整呈現（contain / 不裁切）
+      - 「活躍成員」固定在 leaders 下方、列表上方（不滾動）
+      - 分類浮框：總寬固定 772px，展開高度自適應
+   ✅ Events：保留（如有用到）
 ========================================================= */
 
 /* =========================
@@ -79,11 +80,13 @@ body {
 
 .logo-link { display: inline-block; }
 
+/* 通用 LOGO 預設（非 members 時） */
 .logo-main {
   width: clamp(160px, 55vw, 360px);
   height: auto;
   display: block;
   margin: 0 auto;
+  object-fit: contain;
 }
 
 /* 首頁 mute 按鈕：右上角 */
@@ -157,6 +160,7 @@ body {
     radial-gradient(1200px 800px at 20% 10%, rgba(0,0,0,0.65), transparent 55%),
     radial-gradient(900px 700px at 80% 30%, rgba(0,0,0,0.55), transparent 60%),
     url("../img/homepage-bg.png");
+
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -169,16 +173,20 @@ body {
   max-width: 980px;
   margin: 0 auto;
   padding: 18px 14px 28px;
+
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
+
+/* 預設 container（非首頁） */
 .container{
   max-width: 980px;
   margin: 0 auto;
   padding: 18px 14px 28px;
 }
 
+/* 卡片 */
 .card {
   border: 1px solid var(--line);
   background: var(--panel);
@@ -186,6 +194,7 @@ body {
   box-shadow: var(--shadow);
 }
 
+/* Hero */
 .hero { padding: 18px 16px 16px; }
 .title { margin: 0; font-size: 34px; letter-spacing: 0.08em; }
 .subtitle { margin: 8px 0 0; color: var(--muted); }
@@ -205,6 +214,7 @@ body {
 .page-home .navgrid { order: 1; }
 .page-home .card.hero { order: 2; }
 
+/* Home nav grid */
 .navgrid {
   margin-top: 14px;
   display: grid;
@@ -213,10 +223,12 @@ body {
 }
 @media (min-width: 640px) { .navgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
+/* navbtn（不是 .btn） */
 .navbtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   text-decoration: none;
   color: var(--fg);
 
@@ -244,23 +256,23 @@ body {
 }
 
 /* =========================================================
-   5) Members Page（對應你提供的 HTML）
+   5) Members Page（對應你的 members.html）
 ========================================================= */
 .page-member{
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 
-  /* LOGO header 高度 */
-  --header-h: clamp(92px, 14vw, 148px);
+  /* ✅ LOGO（1587x2245）偏高：用 header 高度控住 */
+  --header-h: clamp(96px, 16vw, 168px);
 
-  /* leaders rail 高度：容納 215x386 的完整圖（含 padding） */
-  --leader-h: clamp(230px, 32vw, 360px);
+  /* ✅ leaders rail 高度：容納 215x386 的完整圖 */
+  --leader-h: clamp(240px, 34vw, 380px);
 
-  /* 固定標題「活躍成員」高度 */
+  /* ✅ 固定標題「活躍成員」高度 */
   --member-title-h: 54px;
 
-  /* ✅ 內容區避開三個固定層 */
+  /* ✅ 內容避開：LOGO + leaders + title */
   padding: calc(var(--header-h) + var(--leader-h) + var(--member-title-h) + 26px) 14px 20px;
 }
 
@@ -281,12 +293,12 @@ body {
   border-bottom: 1px solid var(--line2);
 }
 
-/* LOGO 等比例 */
+/* ✅ Members LOGO：1587x2245 原比例（高度控、寬度 auto） */
 .page-member .logo-main{
-  height: calc(var(--header-h) - 24px);
-  width: auto;
-  max-width: min(88vw, 520px);
-  object-fit: contain;
+  height: calc(var(--header-h) - 24px); /* 扣 padding */
+  width: auto;                          /* ✅ 原比例 */
+  max-width: min(92vw, 520px);          /* ✅ 太寬時限制 */
+  object-fit: contain;                  /* ✅ 不裁切不變形 */
   display: block;
   margin: 0 auto;
 }
@@ -295,15 +307,15 @@ body {
 .page-member .member-layout{ flex: 1; }
 .page-member .footer{ margin-top: auto; }
 
-/* 你 HTML 的 main.member-layout 是 grid（我們明確化） */
+/* 你 main.member-layout 不需要 grid（leaders 是 fixed），改成 block 避免莫名留白 */
 .page-member .member-layout{
   width: 100%;
-  display: block; /* ✅ 這裡改成 block，因為 leaders/group 都是 fixed/正常流不需要 grid 排版 */
+  display: block;
 }
 
-/* =========================================================
-   Members：社主 / 副社主（固定於 LOGO 下方，置中）
-========================================================= */
+/* =========================
+   Members：社主/副社主（固定於 LOGO 下方，置中）
+========================= */
 .page-member .leader-rail{
   position: fixed;
   top: var(--header-h);
@@ -333,7 +345,7 @@ body {
   align-items: stretch;
 }
 
-/* leaders 卡片 */
+/* leaders 卡片（容器） */
 .page-member .leader-rail .member-card{
   height: 100%;
   padding: 8px;
@@ -348,15 +360,12 @@ body {
   justify-content: center;
 }
 
-/* ✅ leaders 圖：215x386 完整呈現（不裁切、不變形） */
+/* ✅ leaders 圖：215x386 完整呈現（不裁切） */
 .page-member .leader-rail .member-card img{
   width: 100%;
   height: 100%;
-
-  /* 用原圖比例做框 */
   aspect-ratio: 215 / 386;
 
-  /* ✅ 重要：完整顯示 */
   object-fit: contain;
   object-position: center;
 
@@ -367,9 +376,9 @@ body {
   border: 1px solid rgba(255,255,255,0.14);
 }
 
-/* =========================================================
+/* =========================
    Members：「活躍成員」固定在 leaders 下方（不滾動）
-========================================================= */
+========================= */
 .page-member .member-title{
   position: fixed;
   top: calc(var(--header-h) + var(--leader-h));
@@ -395,16 +404,12 @@ body {
   box-shadow: 0 10px 22px rgba(0,0,0,0.35);
 }
 
-/* =========================================================
-   Members：右側 group-area（其實現在是「固定區塊下的正常內容」）
-========================================================= */
+/* group-area / group-list 置中 772px 浮框 */
 .page-member .group-area{
   width: 100%;
   display: grid;
-  justify-items: center; /* ✅ 讓 772px 浮框置中 */
+  justify-items: center;
 }
-
-/* group-list：置中 */
 .page-member .group-list{
   width: 100%;
   display: grid;
@@ -412,9 +417,9 @@ body {
   justify-items: center;
 }
 
-/* =========================================================
+/* =========================
    Members：分類浮框（總寬固定 772px；展開高度自適應）
-========================================================= */
+========================= */
 .page-member .group-item{
   width: min(772px, 100%);
   border: 1px solid rgba(255,255,255,0.22);
@@ -480,7 +485,7 @@ body {
   background: rgba(255,255,255,0.08);
 }
 
-/* 展開後 grid：高度自適應（不設固定 height） */
+/* 展開後 grid：高度自適應 */
 .page-member .member-grid--group{
   padding: 12px;
   display: grid;
@@ -494,9 +499,9 @@ body {
   .page-member .member-grid--group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
-/* =========================================================
-   Members：一般成員卡（沿用你原本）
-========================================================= */
+/* =========================
+   Members：一般 member cards（非 leaders）
+========================= */
 .member-card {
   appearance: none;
   border: 1px solid rgba(255,255,255,0.24);
@@ -525,7 +530,7 @@ body {
 }
 
 /* =========================================================
-   6) Modal（沿用）
+   6) Modal
 ========================================================= */
 .modal { position: fixed; inset: 0; display: none; z-index: 999; }
 .modal.is-open { display: block; }
