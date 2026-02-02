@@ -1,304 +1,162 @@
-/* =====================================================================
-   錢包比臉薄 - 全站 style.css（完整可覆蓋版）
-   位置：docs/assets/css/style.css
-   依賴資源：
-   - 字體：docs/assets/fonts/ThePeakFontBeta_V0_102.ttf
-   - LOGO：docs/assets/img/WTTF-LOGO.png
-   - 首頁背景：docs/assets/img/homepage%20bg.png  (注意：檔名含字面 %20)
-===================================================================== */
-
 /* =========================
-   Font
+   Base
 ========================= */
-@font-face{
-  font-family: "ThePeakFontBeta";
-  src: url("../fonts/ThePeakFontBeta_V0_102.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+:root {
+  --bg: #0b0c10;
+  --fg: #ffffff;
+  --muted: rgba(255,255,255,0.75);
+  --muted2: rgba(255,255,255,0.6);
+  --line: rgba(255,255,255,0.14);
+  --panel: rgba(0,0,0,0.35);
+  --panel2: rgba(255,255,255,0.06);
+  --shadow: 0 10px 24px rgba(0,0,0,0.35);
 }
 
-/* =========================
-   Theme Tokens
-========================= */
-:root{
-  --overlay: rgba(0,0,0,.58);
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 
-  --text: rgba(255,255,255,.92);
-  --muted: rgba(255,255,255,.74);
-
-  --card: rgba(18,18,22,.76);
-  --border: rgba(255,255,255,.18);
-  --shadow: 0 14px 44px rgba(0,0,0,.42);
-
-  /* Button contrast */
-  --btn-bg: rgba(255,255,255,.16);
-  --btn-bg-hover: rgba(255,255,255,.28);
-  --btn-border: rgba(255,255,255,.30);
-  --btn-border-hover: rgba(255,255,255,.46);
-
-  --radius: 18px;
-}
-
-/* =========================
-   Base Reset
-========================= */
-*{ box-sizing: border-box; }
-html, body{ height: 100%; }
-html, body{ overflow-x: hidden; }
-
-body{
+body {
   margin: 0;
-
-  font-family: "ThePeakFontBeta",
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-
-  color: var(--text);
-  letter-spacing: .2px;
-  -webkit-text-size-adjust: 100%;
-}
-
-/* =====================================================================
-   Page Backgrounds
-   重點：你的檔名真的叫 homepage%20bg.png（字面 %20）
-   所以 URL 必須寫 %2520 才會解碼後變成 %20
-===================================================================== */
-body.page-home{
-  /* 用 !important 抗其它 style 覆蓋背景 */
-  background:
-    linear-gradient(var(--overlay), var(--overlay)),
-    url("../img/homepage%2520bg.png") center / cover no-repeat fixed !important;
-
-  background-color: #000; /* 背景圖載不到時的保底 */
+  color: var(--fg);
+  background: radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,0.06), transparent 50%),
+              radial-gradient(900px 700px at 80% 30%, rgba(255,255,255,0.05), transparent 55%),
+              var(--bg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", Arial, sans-serif;
+  line-height: 1.5;
 }
 
 /* =========================
-   Header / Logo (Home)
+   Home header / logo
 ========================= */
-.top-logo{
-  position: relative;
-  text-align: center;
-  padding: 14px 18px 10px;
-
-  background: rgba(0,0,0,.18);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
-  border-bottom: 1px solid var(--border);
-}
-
-.logo-main{
-  display: block;
-  margin: 0 auto;
-
-  /* 保持原比例顯示 */
-  width: auto;
-  height: auto;
-
-  /* 22 吋 1920 寬度不需左右滑：限制最大寬 */
-  max-width: min(1800px, 96vw);
-
-  object-fit: contain;
-  filter: drop-shadow(0 14px 32px rgba(0,0,0,.50));
-}
-
-/* 靜音按鈕：右上角固定 */
-.top-actions{
-  position: absolute;
-  top: 16px;
-  right: 18px;
+.top-logo {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
-  gap: 10px;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
 }
 
-/* =========================
-   Buttons (General)
-========================= */
-.btn{
+.logo-main {
+  height: 44px;
+  width: auto;
+  display: block;
+}
+
+.top-actions { display: flex; gap: 10px; }
+
+/* buttons */
+.btn {
   appearance: none;
-  border: 1px solid var(--btn-border);
-  background: var(--btn-bg);
-  color: var(--text);
-
-  padding: 10px 14px;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--fg);
+  padding: 10px 12px;
   border-radius: 999px;
-
   cursor: pointer;
   user-select: none;
-  line-height: 1;
-
-  box-shadow: 0 10px 26px rgba(0,0,0,.22);
-  transition: transform .08s ease, background .12s ease, border-color .12s ease;
 }
 
-.btn:hover{
-  background: var(--btn-bg-hover);
-  border-color: var(--btn-border-hover);
-}
+.btn:hover { border-color: rgba(255,255,255,0.28); }
 
-.btn:active{ transform: translateY(1px); }
-
-.btn:focus-visible{
-  outline: 2px solid rgba(255,255,255,.55);
-  outline-offset: 2px;
-}
-
-/* Ghost 版本：更深底色避免跟背景融在一起 */
-.btn-ghost{
-  background: rgba(0,0,0,.30);
-  border-color: rgba(255,255,255,.34);
-}
-.btn-ghost:hover{
-  background: rgba(0,0,0,.42);
-  border-color: rgba(255,255,255,.50);
+.btn-ghost {
+  background: rgba(255,255,255,0.06);
 }
 
 /* =========================
-   Layout
+   Home layout
 ========================= */
-.container{
+.container {
   max-width: 980px;
   margin: 0 auto;
-  padding: 22px 18px 40px;
+  padding: 18px 14px 28px;
 }
 
-/* =========================
-   Card / Hero
-========================= */
-.card{
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+.card {
+  border: 1px solid var(--line);
+  background: rgba(0,0,0,0.28);
+  border-radius: 18px;
   box-shadow: var(--shadow);
-  padding: 22px 20px;
 }
 
-.hero .title{
-  margin: 0 0 6px;
-  font-size: 32px;
-  letter-spacing: .6px;
+.hero {
+  padding: 18px 16px 16px;
 }
 
-.hero .subtitle{
+.title {
   margin: 0;
+  font-size: 34px;
+  letter-spacing: 0.08em;
+}
+
+.subtitle {
+  margin: 8px 0 0;
   color: var(--muted);
 }
 
-.divider{
+.divider {
   height: 1px;
-  background: var(--border);
+  background: rgba(255,255,255,0.10);
   margin: 16px 0;
 }
 
-.intro p{
-  margin: 10px 0;
-  line-height: 1.7;
-}
+.intro p { margin: 10px 0; }
 
-.rules{
+.rules {
   margin: 12px 0 0;
   padding-left: 18px;
+  color: var(--muted);
 }
 
-.rules li{
-  margin: 8px 0;
-  line-height: 1.6;
+.hint {
+  margin: 14px 0 0;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255, 210, 80, 0.08);
+  color: rgba(255,255,255,0.9);
 }
 
-.hint{
+/* nav */
+.navgrid {
   margin-top: 14px;
-  color: rgba(255,255,255,.92);
-  background: rgba(255,193,7,.14);
-  border: 1px solid rgba(255,193,7,.40);
-  padding: 10px 12px;
-  border-radius: 12px;
-}
-
-/* =========================
-   Navigation Grid
-========================= */
-.navgrid{
-  margin-top: 18px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
-.navbtn{
-  display: flex;
+@media (min-width: 640px) {
+  .navgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.navbtn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-
   text-decoration: none;
-  color: var(--text);
-
-  border: 1px solid var(--btn-border);
-  background: rgba(255,255,255,.18);
-
+  color: var(--fg);
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.06);
   border-radius: 14px;
-  padding: 14px 12px;
-
-  font-weight: 750;
-  letter-spacing: .4px;
-
-  box-shadow: 0 10px 26px rgba(0,0,0,.22);
-  transition: transform .08s ease, background .12s ease, border-color .12s ease;
+  padding: 12px 10px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
 }
 
-.navbtn:hover{
-  background: rgba(255,255,255,.30);
-  border-color: var(--btn-border-hover);
+.navbtn:hover {
+  border-color: rgba(255,255,255,0.28);
+  transform: translateY(-1px);
 }
 
-.navbtn:active{
-  transform: translateY(1px);
-}
-
-.navbtn:focus-visible{
-  outline: 2px solid rgba(255,255,255,.55);
-  outline-offset: 2px;
-}
-
-/* =========================
-   Footer
-========================= */
-.footer{
+.footer {
   text-align: center;
-  padding: 16px 0 24px;
-  color: rgba(255,255,255,.62);
+  padding: 18px 12px 26px;
+  color: rgba(255,255,255,0.55);
 }
-
-/* =========================
-   Responsive
-========================= */
-@media (max-width: 768px){
-  /* 手機背景 fixed 可能卡頓 */
-  body.page-home{
-    background-attachment: scroll !important;
-  }
-
-  .top-actions{
-    top: 12px;
-    right: 12px;
-  }
-
-  .navgrid{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .hero .title{
-    font-size: 28px;
-  }
-
-  /* 手機保命：LOGO 不能爆版 */
-  .logo-main{
-    max-width: 94vw;
-  }
-}
-
 
 /* =========================
    Member Page Layout
@@ -327,32 +185,26 @@ body.page-home{
   letter-spacing: 0.06em;
 }
 
-/* =========================
-   PC：leaders 真固定在左側
-   - 用 fixed 讓它不是 sticky（完全跟著視窗）
-   - 右側主內容用 margin-left 避開
-========================= */
+/* PC：leaders 真固定在左側（fixed） */
 @media (min-width: 960px) {
   .member-layout {
-    grid-template-columns: 1fr; /* 因為左側用 fixed 了，主內容獨立 */
+    grid-template-columns: 1fr; /* 左側 fixed，不占 grid */
   }
 
   .leader-rail {
     position: fixed;
-    left: 24px;              /* 你可微調距離 */
-    top: 24px;
+    left: 24px;
+    top: 86px; /* 避免貼太上面，可自行調 */
     width: 260px;
     z-index: 10;
   }
 
   .group-area {
-    margin-left: 300px;      /* 260 + 邊距，避免被 leaders 蓋到 */
+    margin-left: 300px; /* 260 + 間距 */
   }
 }
 
-/* =========================
-   Card
-========================= */
+/* Cards */
 .member-card {
   appearance: none;
   border: 1px solid rgba(255,255,255,0.15);
@@ -361,7 +213,7 @@ body.page-home{
   padding: 10px;
   cursor: pointer;
   transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  box-shadow: var(--shadow);
 }
 
 .member-card:hover {
@@ -382,9 +234,7 @@ body.page-home{
   display: block;
 }
 
-/* =========================
-   Accordion Groups
-========================= */
+/* Accordion Groups */
 .group-list {
   display: grid;
   gap: 12px;
@@ -445,7 +295,7 @@ body.page-home{
 }
 
 /* =========================
-   Modal（如果你原本 style.css 已有，可忽略這段）
+   Modal
 ========================= */
 .modal {
   position: fixed;
