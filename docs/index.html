@@ -7,64 +7,60 @@
 
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
-
-<body class="page-home">
+<body>
   <!-- 背景音樂 -->
-  <audio
-    id="bgm"
-    src="assets/sounds/index.mp3"
-    preload="auto"
-    loop
-    playsinline
-    autoplay
-  ></audio>
+  <audio id="bgm" preload="auto" loop playsinline>
+    <source src="assets/sounds/index.mp3" type="audio/mpeg" />
+  </audio>
 
-  <!-- 右上角控制列 -->
-  <div class="top-actions">
-    <button id="btnMute" class="btn" type="button" aria-label="靜音/取消靜音">
-      🔊 音樂
-    </button>
-  </div>
+  <header class="topbar">
+    <div class="brand">
+      <img class="logo" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
+    </div>
 
-  <!-- 主內容 -->
-  <main class="home">
-    <header class="home-header">
-      <img
-        class="logo"
-        src="assets/img/WTTF-LOGO.png"
-        alt="錢包比臉薄 LOGO"
-        loading="eager"
-      />
+    <div class="top-actions">
+      <button id="muteBtn" class="btn btn-ghost" type="button" aria-pressed="false" title="靜音 / 取消靜音">
+        🔊 聲音：開
+      </button>
+    </div>
+  </header>
 
+  <main class="container">
+    <section class="card hero">
       <h1 class="title">錢包比臉薄</h1>
       <p class="subtitle">大亞洲地區玩家歡迎，請以中文為主進行交流。</p>
-    </header>
 
-    <section class="card">
-      <h2>百業簡介</h2>
-      <ul class="rules">
-        <li>每週貨運做好做滿，掛在駐地閒聊瞎晃，搞搞活躍度。</li>
-        <li>百業派對 22：00 開始。</li>
-        <li><b>3 天未上線</b> → 列入觀察。</li>
-        <li><b>7 天未上線</b> → 直接踢。</li>
-        <li><b>連續兩周活躍度不足 1000 以上</b> → 直接踢。</li>
-      </ul>
+      <div class="divider"></div>
 
-      <div id="tapToPlay" class="tap-to-play" hidden>
-        <p>🔇 瀏覽器擋住自動播放，點一下此頁面啟動背景音樂</p>
+      <div class="intro">
+        <p>每週貨運做好做滿，掛在駐地閒聊瞎晃，搞搞活躍度。</p>
+        <p><strong>百業派對 22：00 開始。</strong></p>
+
+        <ul class="rules">
+          <li><strong>3 天未上線</strong> → 列入觀察。</li>
+          <li><strong>7 天未上線</strong> → 直接踢。</li>
+          <li><strong>連續兩周活躍度不足 1000 以上</strong> → 直接踢。</li>
+        </ul>
       </div>
+
+      <p id="autoplayHint" class="hint" hidden>
+        ⚠️ 你的瀏覽器阻擋自動播放。點一下頁面或按「聲音：開」即可開始播放。
+      </p>
     </section>
 
-    <!-- 導覽按鈕（你指定的 6 個） -->
-    <nav class="nav">
-      <a class="nav-btn" href="index.html">首頁</a>
-      <a class="nav-btn" href="philosophy.html">百業理念</a>
-      <a class="nav-btn" href="members.html">活躍成員</a>
-      <a class="nav-btn" href="events.html">荷包活動</a>
-      <a class="nav-btn" href="schedule.html">百業行程</a>
-      <a class="nav-btn" href="links.html">外部連結</a>
+    <nav class="navgrid" aria-label="主要導覽">
+      <a class="navbtn" href="index.html">首頁</a>
+      <a class="navbtn" href="philosophy.html">百業理念</a>
+      <a class="navbtn" href="members.html">活躍成員</a>
+      <a class="navbtn" href="events.html">荷包活動</a>
+      <a class="navbtn" href="schedule.html">百業行程</a>
+      <a class="navbtn" href="links.html">外部連結</a>
     </nav>
   </main>
+
+  <footer class="footer">
+    <small>© 錢包比臉薄</small>
+  </footer>
 
   <script src="assets/js/app-index.js"></script>
 </body>
