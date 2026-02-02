@@ -1,0 +1,137 @@
+/* ========== 基本 Reset ========== */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  color: #f5f5f5;
+}
+
+/* ========== 首頁背景 ========== */
+.page-home {
+  /* 你的檔名有空格：homepage bg.png -> 用 URL encode */
+  background-image:
+    radial-gradient(1200px 700px at 50% 25%, rgba(0,0,0,.25), rgba(0,0,0,.75)),
+    url("../img/homepage%20bg.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* ========== 右上角按鈕 ========== */
+.top-actions {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(0,0,0,.45);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+.btn:hover { background: rgba(0,0,0,.6); }
+
+/* ========== 版心 ========== */
+.home {
+  min-height: 100%;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding: 84px 16px 24px;
+  gap: 18px;
+}
+
+.home-header {
+  text-align: center;
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+.logo {
+  width: min(240px, 60vw);
+  height: auto;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,.6));
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: 2px;
+  text-shadow: 0 10px 30px rgba(0,0,0,.6);
+}
+
+.subtitle {
+  margin: 0;
+  opacity: .92;
+  max-width: 46ch;
+  line-height: 1.6;
+}
+
+/* ========== 卡片 ========== */
+.card {
+  width: min(820px, 92vw);
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 18px;
+  padding: 18px 18px 10px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 60px rgba(0,0,0,.35);
+}
+
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.rules {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  line-height: 1.7;
+}
+
+/* ========== 自動播放被擋提示 ========== */
+.tap-to-play {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px dashed rgba(255,255,255,.35);
+  background: rgba(0,0,0,.35);
+}
+
+/* ========== 導覽 ========== */
+.nav {
+  width: min(820px, 92vw);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #fff;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(10px);
+}
+.nav-btn:hover { background: rgba(0,0,0,.55); }
+
+@media (min-width: 720px) {
+  .nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
