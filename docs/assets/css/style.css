@@ -122,7 +122,7 @@ body {
   background-image:
     radial-gradient(1200px 800px at 20% 10%, rgba(0,0,0,0.55), transparent 55%),
     radial-gradient(900px 700px at 80% 30%, rgba(0,0,0,0.45), transparent 60%),
-    url("../img/homepage%20bg.png");
+    url("../img/homepage%25%20bg.png");
 
   background-size: cover;
   background-position: center;
@@ -449,3 +449,4 @@ body {
   color: #fff;
   text-decoration: none;
 }
+
