@@ -1,137 +1,150 @@
-/* ========== 基本 Reset ========== */
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; }
-body {
+:root{
+  --bg-overlay: rgba(0,0,0,.55);
+  --card: rgba(20,20,24,.72);
+  --border: rgba(255,255,255,.12);
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.72);
+  --shadow: 0 12px 40px rgba(0,0,0,.35);
+  --radius: 18px;
+}
+
+*{ box-sizing: border-box; }
+html,body{ height: 100%; }
+body{
+  margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-  color: #f5f5f5;
+  color: var(--text);
+
+  /* 背景圖（你的檔案：docs/assets/img/homepage%20bg.png） */
+  background:
+    linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+    url("../img/homepage%20bg.png") center / cover no-repeat fixed;
 }
 
-/* ========== 首頁背景 ========== */
-.page-home {
-  /* 你的檔名有空格：homepage bg.png -> 用 URL encode */
-  background-image:
-    radial-gradient(1200px 700px at 50% 25%, rgba(0,0,0,.25), rgba(0,0,0,.75)),
-    url("../img/homepage%20bg.png");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-}
-
-/* ========== 右上角按鈕 ========== */
-.top-actions {
-  position: fixed;
-  top: 12px;
-  right: 12px;
+.topbar{
+  position: sticky;
+  top: 0;
   z-index: 10;
-  display: flex;
-  gap: 8px;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
 }
 
-.btn {
-  appearance: none;
-  border: 1px solid rgba(255,255,255,.25);
-  background: rgba(0,0,0,.45);
-  color: #fff;
+.logo{
+  height: 44px;
+  width: auto;
+  display:block;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
+}
+
+.btn{
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.08);
+  color: var(--text);
   padding: 10px 12px;
   border-radius: 999px;
   cursor: pointer;
-  backdrop-filter: blur(8px);
+  user-select: none;
 }
-.btn:hover { background: rgba(0,0,0,.6); }
+.btn:hover{ background: rgba(255,255,255,.12); }
+.btn:active{ transform: translateY(1px); }
 
-/* ========== 版心 ========== */
-.home {
-  min-height: 100%;
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  padding: 84px 16px 24px;
-  gap: 18px;
+.btn-ghost{
+  background: rgba(0,0,0,.20);
 }
 
-.home-header {
-  text-align: center;
-  display: grid;
-  gap: 10px;
-  justify-items: center;
+.container{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px 18px 40px;
 }
 
-.logo {
-  width: min(240px, 60vw);
-  height: auto;
-  filter: drop-shadow(0 10px 24px rgba(0,0,0,.6));
+.card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px 20px;
 }
 
-.title {
+.hero .title{
+  margin: 0 0 6px;
+  font-size: 32px;
+  letter-spacing: .5px;
+}
+.hero .subtitle{
   margin: 0;
-  font-size: clamp(28px, 4vw, 44px);
-  letter-spacing: 2px;
-  text-shadow: 0 10px 30px rgba(0,0,0,.6);
+  color: var(--muted);
 }
 
-.subtitle {
-  margin: 0;
-  opacity: .92;
-  max-width: 46ch;
-  line-height: 1.6;
+.divider{
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
 }
 
-/* ========== 卡片 ========== */
-.card {
-  width: min(820px, 92vw);
-  background: rgba(0,0,0,.45);
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 18px;
-  padding: 18px 18px 10px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 18px 60px rgba(0,0,0,.35);
-}
-
-.card h2 {
-  margin: 0 0 10px;
-  font-size: 18px;
-  letter-spacing: 1px;
-}
-
-.rules {
-  margin: 0;
-  padding-left: 18px;
-  display: grid;
-  gap: 8px;
+.intro p{
+  margin: 10px 0;
   line-height: 1.7;
 }
 
-/* ========== 自動播放被擋提示 ========== */
-.tap-to-play {
+.rules{
+  margin: 12px 0 0;
+  padding-left: 18px;
+}
+.rules li{
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.hint{
   margin-top: 14px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px dashed rgba(255,255,255,.35);
-  background: rgba(0,0,0,.35);
+  color: rgba(255,255,255,.86);
+  background: rgba(255,193,7,.12);
+  border: 1px solid rgba(255,193,7,.35);
+  padding: 10px 12px;
+  border-radius: 12px;
 }
 
-/* ========== 導覽 ========== */
-.nav {
-  width: min(820px, 92vw);
+.navgrid{
+  margin-top: 18px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
 }
 
-.nav-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  color: #fff;
-  padding: 12px 12px;
+.navbtn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color: var(--text);
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.07);
   border-radius: 14px;
-  border: 1px solid rgba(255,255,255,.18);
-  background: rgba(0,0,0,.35);
-  backdrop-filter: blur(10px);
+  padding: 14px 12px;
+  font-weight: 650;
+  transition: transform .08s ease, background .12s ease;
 }
-.nav-btn:hover { background: rgba(0,0,0,.55); }
+.navbtn:hover{
+  background: rgba(255,255,255,.12);
+}
+.navbtn:active{
+  transform: translateY(1px);
+}
 
-@media (min-width: 720px) {
-  .nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.footer{
+  text-align:center;
+  padding: 16px 0 24px;
+  color: rgba(255,255,255,.55);
+}
+
+@media (max-width: 720px){
+  .navgrid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .hero .title{ font-size: 28px; }
+  body{ background-attachment: scroll; } /* 手機更穩 */
 }
