@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>錢包比臉薄｜百業理念</title>
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- 本頁專用：鮮明色彩背景（無背景圖片） -->
+  <style>
+    body.page-philosophy{
+      min-height: 100%;
+      background:
+        radial-gradient(1200px 700px at 15% 15%, rgba(255, 0, 122, .35), transparent 55%),
+        radial-gradient(1100px 700px at 85% 20%, rgba(0, 200, 255, .35), transparent 55%),
+        radial-gradient(900px 700px at 30% 85%, rgba(255, 230, 0, .28), transparent 55%),
+        linear-gradient(135deg, rgba(25, 10, 60, 1), rgba(10, 25, 60, 1));
+      background-attachment: fixed;
+    }
+
+    /* 理念文字規格：36px */
+    .philosophy-text{
+      font-size: 36px;
+      line-height: 1.55;
+      letter-spacing: .6px;
+      text-align: center;
+    }
+
+    .philosophy-text p{
+      margin: 14px 0;
+    }
+
+    /* 手機字級保命 */
+    @media (max-width: 768px){
+      .philosophy-text{ font-size: 26px; }
+      body.page-philosophy{ background-attachment: scroll; }
+    }
+  </style>
+</head>
+
+<body class="page-philosophy">
+  <!-- 背景音樂 -->
+  <audio id="bgm" preload="auto" loop playsinline>
+    <source src="assets/sounds/philosophy.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- LOGO 置中置頂（沿用 style.css 的 top-logo / logo-main / top-actions） -->
+  <header class="top-logo">
+    <img class="logo-main" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
+
+    <div class="top-actions">
+      <button id="muteBtn" class="btn btn-ghost" type="button" aria-pressed="false" title="靜音 / 取消靜音">
+        🔊 聲音：開
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card hero">
+      <h1 class="title" style="text-align:center;">百業理念</h1>
+      <div class="divider"></div>
+
+      <div class="philosophy-text">
+        <p>錢包比臉薄，課金比人狠！</p>
+        <p>定期跟不定期的抽獎活動！總有一天抽到我！</p>
+        <p>因為臉皮太厚所以錢包很薄XD</p>
+      </div>
+
+      <p id="autoplayHint" class="hint" hidden style="text-align:center;">
+        ⚠️ 你的瀏覽器阻擋自動播放。點一下頁面或按「聲音：開」即可開始播放。
+      </p>
+    </section>
+
+    <!--（可選）底部導覽，讓玩家好回首頁 -->
+    <nav class="navgrid" aria-label="主要導覽">
+      <a class="navbtn" href="index.html">首頁</a>
+      <a class="navbtn" href="members.html">活躍成員</a>
+      <a class="navbtn" href="events.html">荷包活動</a>
+      <a class="navbtn" href="schedule.html">百業行程</a>
+      <a class="navbtn" href="links.html">外部連結</a>
+      <a class="navbtn" href="philosophy.html" aria-current="page">百業理念</a>
+    </nav>
+  </main>
+
+  <footer class="footer">
+    <small>© 錢包比臉薄</small>
+  </footer>
+
+  <script src="assets/js/app-philosophy.js"></script>
+</body>
+</html>
