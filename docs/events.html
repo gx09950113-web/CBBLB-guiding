@@ -2,41 +2,121 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>錢包比臉薄｜荷包活動</title>
+
+  <!-- 全站 CSS -->
   <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- 本頁專用：events 背景 -->
+  <style>
+    body.page-events{
+      min-height: 100%;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.75)),
+        url("assets/img/events-bg.png") center/cover no-repeat fixed;
+    }
+
+    .events-wrap{
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 18px 0 56px;
+    }
+
+    .events-title{
+      margin: 12px 0 14px;
+      text-align: center;
+      font-size: 22px;
+      letter-spacing: .08em;
+      opacity: .95;
+    }
+
+    #eventsGrid{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding-top: 10px;
+    }
+
+    @media (min-width: 860px){
+      #eventsGrid{
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 22px;
+      }
+      #eventsGrid .event-card:nth-child(odd){
+        grid-column: 1;
+        transform: translateX(-8px);
+      }
+      #eventsGrid .event-card:nth-child(even){
+        grid-column: 2;
+        transform: translateX(8px);
+      }
+    }
+
+    .events-hint{
+      width: min(900px, 92vw);
+      margin: 18px auto 0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.18);
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: .95;
+    }
+
+    .events-actions{
+      position: sticky;
+      top: 10px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 8px;
+      z-index: 5;
+    }
+  </style>
 </head>
 
 <body class="page-events">
-  <!-- 背景音樂（預設播放、可靜音） -->
+
+  <!-- BGM -->
   <audio id="bgmEvents" preload="auto" loop playsinline autoplay>
     <source src="assets/sounds/events.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- LOGO 置中置頂（自適應） -->
+  <!-- LOGO -->
   <header class="top-logo">
     <a class="logo-link" href="index.html" aria-label="回到首頁">
       <img class="logo-main" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
     </a>
+  </header>
 
-    <!-- 靜音按鈕（顯示於 LOGO 區） -->
-    <div class="top-actions">
-      <button id="muteBtnEvents" class="btn btn-ghost" type="button" aria-pressed="false" title="靜音 / 取消靜音">
+  <main class="events-wrap">
+    <!-- 操作列 -->
+    <div class="events-actions">
+      <button
+        id="muteBtnEvents"
+        class="btn btn-ghost"
+        type="button"
+        aria-pressed="false"
+        title="靜音 / 取消靜音">
         🔊
       </button>
     </div>
-  </header>
 
-  <main class="events-wrap" aria-label="荷包活動">
     <h1 class="events-title">荷包活動</h1>
 
-    <!-- 這裡會由 JS 渲染階梯卡片 -->
-    <section id="eventsGrid" class="events-grid" aria-live="polite"></section>
+    <!-- 活動卡片 -->
+    <section id="eventsGrid" aria-label="活動列表"></section>
 
-    <!-- 讀取失敗或無資料時顯示 -->
-    <p id="eventsHint" class="events-hint" hidden>目前沒有活動資料。</p>
+    <!-- 提示 -->
+    <p id="eventsHint" class="events-hint" hidden>
+      目前沒有活動資料，或讀取失敗。請確認 <code>data/events.json</code> 是否存在。
+    </p>
   </main>
 
-  <script src="assets/js/events.js"></script>
+  <!-- ✅ JS：檔名已改 -->
+  <script src="assets/js/app-events.js" defer></script>
 </body>
 </html>
