@@ -18,7 +18,7 @@
     }
   ],
   "members": [
-    { "id": "h001", "name": "顧燁晨", "title": “水母", "group": "海月", "image": "assets/img/members/1.png", "bio": "破竹風"},
+    { "id": "h001", "name": "顧燁晨", "title": "水母", "group": "海月", "image": "assets/img/members/1.png", "bio": "破竹風"},
 
     { "id": "s001", "name": "厭世小狐狸", "title": "小狐狸", "group": "修羅", "image": "assets/img/members/2.png", "bio": "鳴金影"},
     { "id": "s002", "name": "唉喲味啊", "title": "唉喲", "group": "修羅", "image": "assets/img/members/3.png", "bio": "鳴金虹" },
