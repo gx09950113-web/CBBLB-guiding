@@ -1,9 +1,7 @@
 /* =========================================================
-   WTTF - style.css (完整版・不透明度加強版)
-   路徑假設：
-   - CSS：docs/assets/css/style.css
-   - FONT：docs/assets/fonts/ThePeakFontBeta_V0_102.ttf
-   - IMG：docs/assets/img/...
+   WTTF - style.css（完整版・Hover 紅色光暈脈衝版）
+   - 按鈕 hover：背景變暗 + 紅色光暈 pulse（文字不變色）
+   - 圖片：homepage-bg.png（完全不動）
 ========================================================= */
 
 /* =========================
@@ -27,11 +25,9 @@
   --muted: rgba(255, 255, 255, 0.78);
   --muted2: rgba(255, 255, 255, 0.65);
 
-  /* 🔥 提高邊框可見度 */
   --line: rgba(255, 255, 255, 0.24);
   --line2: rgba(255, 255, 255, 0.18);
 
-  /* 🔥 提高面板不透明度 */
   --panel: rgba(0, 0, 0, 0.46);
   --panel2: rgba(255, 255, 255, 0.14);
 
@@ -41,8 +37,10 @@
   --radius: 18px;
   --radius-sm: 14px;
 
-  /* Header 高度基準（members 固定欄避開用） */
   --header-h: 86px;
+
+  /* 🔥 Hover 光暈顏色 */
+  --glow-red: rgba(255, 60, 60, 0.85);
 }
 
 * { box-sizing: border-box; }
@@ -68,13 +66,10 @@ body {
   z-index: 20;
   padding: 12px 14px;
   text-align: center;
-
   background: rgba(0, 0, 0, 0.48);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line2);
 }
-
-.logo-link { display: inline-block; }
 
 .logo-main {
   width: clamp(160px, 55vw, 360px);
@@ -92,7 +87,7 @@ body {
 }
 
 /* =========================
-   3) Buttons
+   3) Buttons（重點）
 ========================= */
 .btn {
   appearance: none;
@@ -103,33 +98,19 @@ body {
   border-radius: 999px;
   cursor: pointer;
   user-select: none;
-  transition: background .15s ease, border-color .15s ease, transform .1s ease;
+
+  text-shadow: none;
+  transition:
+    background .15s ease,
+    border-color .15s ease,
+    transform .1s ease;
 }
 
+/* 🔥 hover：背景變暗 + 紅色光暈脈衝 */
 .btn:hover {
-  background: rgba(255,255,255,0.24);
-  border-color: rgba(255,255,255,0.42);
-}
-/* =========================
-   Button Hover：變暗 + 文字閃紅一下
-========================= */
-
-/* 1) hover 時按鈕底色更暗 */
-.btn:hover{
-  background: rgba(0,0,0,0.62);        /* 更暗 */
+  background: rgba(0,0,0,0.62);
   border-color: rgba(255,255,255,0.46);
-}
-
-/* 2) 文字閃紅一下：用 animation 做「瞬間紅 -> 回原色」 */
-.btn:hover{
-  animation: btnFlashText .22s ease-out 1;
-}
-
-/* 文字閃紅動畫（作用在按鈕本身的 color） */
-@keyframes btnFlashText{
-  0%   { color: var(--fg); }
-  35%  { color: #ff3b3b; }  /* 閃一下紅字 */
-  100% { color: var(--fg); }
+  animation: btnGlowPulse 0.9s ease-in-out infinite;
 }
 
 .btn:active { transform: translateY(1px); }
@@ -139,14 +120,34 @@ body {
   border-color: rgba(255,255,255,0.32);
 }
 
+/* 🔴 紅色光暈脈衝（文字不變色） */
+@keyframes btnGlowPulse {
+  0% {
+    text-shadow: none;
+  }
+  40% {
+    text-shadow:
+      0 0 6px var(--glow-red),
+      0 0 14px rgba(255,60,60,0.55);
+  }
+  60% {
+    text-shadow:
+      0 0 8px var(--glow-red),
+      0 0 18px rgba(255,60,60,0.65);
+  }
+  100% {
+    text-shadow: none;
+  }
+}
+
 /* =========================
-   4) Home Page
+   4) Home Page（圖片不動）
 ========================= */
 .page-home {
   background-image:
     radial-gradient(1200px 800px at 20% 10%, rgba(0,0,0,0.65), transparent 55%),
     radial-gradient(900px 700px at 80% 30%, rgba(0,0,0,0.55), transparent 60%),
-    url("../img/homepage-bg.png"); 
+    url("../img/homepage-bg.png");
 
   background-size: cover;
   background-position: center;
@@ -190,284 +191,34 @@ body {
   margin: 16px 0;
 }
 
-.intro p { margin: 10px 0; }
-
-.rules {
-  margin: 12px 0 0;
-  padding-left: 18px;
-  color: var(--muted);
-}
-
-.hint {
-  margin: 14px 0 0;
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(255,255,255,0.22);
-  background: rgba(255, 210, 80, 0.12);
-  color: rgba(255,255,255,0.95);
-}
-
-/* Home nav */
-.navgrid {
-  margin-top: 14px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-@media (min-width: 640px) {
-  .navgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-
+/* =========================
+   Nav Buttons
+========================= */
 .navbtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   text-decoration: none;
   color: var(--fg);
-
   border: 1px solid var(--line);
   background: rgba(255,255,255,0.18);
   border-radius: var(--radius-sm);
   padding: 12px 10px;
-
   box-shadow: 0 8px 18px rgba(0,0,0,0.35);
-  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease;
 }
 
 .navbtn:hover {
-  background: rgba(255,255,255,0.30);
+  background: rgba(0,0,0,0.55);
   border-color: rgba(255,255,255,0.46);
   transform: translateY(-1px);
 }
 
+/* =========================
+   Footer
+========================= */
 .footer {
   text-align: center;
   padding: 18px 12px 26px;
   color: rgba(255,255,255,0.60);
 }
-
-/* =========================
-   5) Members Page
-========================= */
-.page-member {
-  min-height: 100vh;
-  padding: 20px 14px;
-  --header-h: 86px;
-}
-
-.member-layout {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  gap: 16px;
-}
-
-.leader-stack {
-  display: grid;
-  gap: 12px;
-}
-
-.member-title {
-  margin: 0 0 12px;
-  font-size: 28px;
-  letter-spacing: 0.06em;
-}
-
-@media (min-width: 960px) {
-  .member-layout { grid-template-columns: 1fr; }
-
-  .leader-rail {
-    position: fixed;
-    left: 24px;
-    width: 260px;
-    z-index: 10;
-    top: calc(var(--header-h) + 16px);
-  }
-
-  .group-area {
-    margin-left: 300px;
-  }
-}
-
-.member-card {
-  appearance: none;
-  border: 1px solid rgba(255,255,255,0.24);
-  background: rgba(0,0,0,0.52);
-  border-radius: 16px;
-  padding: 10px;
-  cursor: pointer;
-
-  box-shadow: var(--shadow);
-  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
-}
-
-.member-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255,255,255,0.42);
-}
-
-.member-card img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 12px;
-  display: block;
-}
-
-/* Accordion */
-.group-list {
-  display: grid;
-  gap: 12px;
-}
-
-.group-item {
-  border: 1px solid rgba(255,255,255,0.22);
-  border-radius: 16px;
-  background: rgba(0,0,0,0.46);
-  overflow: hidden;
-}
-
-.group-summary {
-  list-style: none;
-  cursor: pointer;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 12px 14px;
-  user-select: none;
-}
-
-.group-summary::-webkit-details-marker { display: none; }
-
-.group-name {
-  font-size: 18px;
-  letter-spacing: 0.06em;
-}
-
-.group-meta {
-  opacity: 0.85;
-  font-size: 14px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.24);
-  background: rgba(255,255,255,0.12);
-}
-
-.group-item[open] .group-summary {
-  border-bottom: 1px solid rgba(255,255,255,0.20);
-  background: rgba(255,255,255,0.08);
-}
-
-/* 展開後成員 */
-.member-grid--group {
-  padding: 12px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-@media (min-width: 640px) {
-  .member-grid--group { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-
-@media (min-width: 960px) {
-  .member-grid--group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
-
-/* =========================
-   6) Modal
-========================= */
-.modal {
-  position: fixed;
-  inset: 0;
-  display: none;
-  z-index: 999;
-}
-
-.modal.is-open { display: block; }
-
-.modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.68);
-  backdrop-filter: blur(6px);
-}
-
-.modal-panel {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(720px, calc(100vw - 24px));
-  transform: translate(-50%, -50%);
-
-  background: rgba(10, 10, 12, 0.96);
-  border: 1px solid rgba(255,255,255,0.26);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow2);
-}
-
-.modal-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-
-  width: 40px;
-  height: 40px;
-
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.26);
-  background: rgba(255,255,255,0.12);
-  color: #fff;
-  cursor: pointer;
-}
-
-.modal-body { padding: 20px 18px 18px; }
-
-.modal-header {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.modal-avatar {
-  width: 88px;
-  height: 88px;
-  border-radius: 16px;
-  object-fit: cover;
-  border: 1px solid rgba(255,255,255,0.26);
-}
-
-.modal-name { margin: 0; font-size: 22px; }
-.modal-role { margin: 6px 0 0; opacity: 0.85; }
-.modal-bio {
-  margin: 12px 0 0;
-  line-height: 1.7;
-  opacity: 0.95;
-}
-
-.modal-links {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 14px;
-}
-
-.modal-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 10px;
-
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.26);
-  background: rgba(255,255,255,0.14);
-
-  color: #fff;
-  text-decoration: none;
-}
-
-
