@@ -13,9 +13,11 @@
     <source src="assets/sounds/index.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- LOGO 置中置頂 -->
+  <!-- LOGO 置中置頂（自適應） -->
   <header class="top-logo">
-    <img class="logo-main" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
+    <a class="logo-link" href="index.html" aria-label="回到首頁">
+      <img class="logo-main" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
+    </a>
 
     <div class="top-actions">
       <button id="muteBtn" class="btn btn-ghost" type="button" aria-pressed="false" title="靜音 / 取消靜音">
@@ -63,9 +65,7 @@
 
   <script>
     (() => {
-      // ================================
       // Global BGM Guard（切頁不重疊）
-      // ================================
       const BGM_KEY = "WTTF_ACTIVE_BGM";
       const CURRENT_BGM = "index";
 
@@ -75,7 +75,6 @@
 
       if (!audio) return;
 
-      // 0~1 線性音量，使用 0.15 作為「偏小聲」預設
       audio.volume = 0.15;
 
       function setMuted(isMuted) {
@@ -86,24 +85,20 @@
         }
       }
 
-      // 預設開聲音
       setMuted(false);
 
       function shouldPlayHere() {
         const active = sessionStorage.getItem(BGM_KEY);
-        // 如果 session 指定的是別頁（例如 members），index 不介入播放
         return !(active && active !== CURRENT_BGM);
       }
 
       async function tryPlay() {
-        // 不該在 index 播：直接停掉、也不顯示提示
         if (!shouldPlayHere()) {
           audio.pause();
           if (hint) hint.hidden = true;
           return;
         }
 
-        // 只有確定要由 index 播時才宣告 active=index
         sessionStorage.setItem(BGM_KEY, CURRENT_BGM);
 
         try {
@@ -114,7 +109,6 @@
         }
       }
 
-      // 點靜音鍵切換；同時嘗試播放（使用者互動通常可解鎖播放）
       if (muteBtn) {
         muteBtn.addEventListener("click", async () => {
           setMuted(!audio.muted);
@@ -122,21 +116,15 @@
         });
       }
 
-      // 點一下頁面也嘗試解鎖播放（手機更穩）
       document.addEventListener("pointerdown", async () => {
         if (audio.paused) await tryPlay();
       }, { once: true });
 
-      // 切頁/切分頁：離開就停，避免重疊
       document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-          audio.pause();
-        } else {
-          tryPlay();
-        }
+        if (document.hidden) audio.pause();
+        else tryPlay();
       });
 
-      // 初次嘗試播放
       tryPlay();
     })();
   </script>
