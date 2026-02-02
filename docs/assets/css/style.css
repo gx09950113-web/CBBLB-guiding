@@ -1,13 +1,22 @@
 /* =========================
+   Font
+========================= */
+@font-face {
+  font-family: "ThePeak";
+  src: url("../fonts/ThePeakFontBeta_V0_102.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =========================
    Base
 ========================= */
 :root {
   --bg: #0b0c10;
   --fg: #ffffff;
   --muted: rgba(255,255,255,0.75);
-  --muted2: rgba(255,255,255,0.6);
   --line: rgba(255,255,255,0.14);
-  --panel: rgba(0,0,0,0.35);
   --panel2: rgba(255,255,255,0.06);
   --shadow: 0 10px 24px rgba(0,0,0,0.35);
 }
@@ -21,36 +30,48 @@ body {
   background: radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,0.06), transparent 50%),
               radial-gradient(900px 700px at 80% 30%, rgba(255,255,255,0.05), transparent 55%),
               var(--bg);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", Arial, sans-serif;
+  font-family: "ThePeak", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", Arial, sans-serif;
   line-height: 1.5;
 }
 
 /* =========================
-   Home header / logo
+   Top Logo (centered)
 ========================= */
 .top-logo {
   position: sticky;
   top: 0;
   z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
   padding: 12px 14px;
   background: rgba(0,0,0,0.35);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,0.10);
+  text-align: center;
+}
+
+/* 讓 LOGO 永遠置中，不受右側按鈕影響 */
+.logo-link {
+  display: inline-block;
 }
 
 .logo-main {
-  height: 44px;
-  width: auto;
+  width: clamp(160px, 55vw, 360px);
+  height: auto;
   display: block;
+  margin: 0 auto;
 }
 
-.top-actions { display: flex; gap: 10px; }
+/* 靜音按鈕固定在右上角 */
+.top-actions {
+  position: absolute;
+  right: 14px;
+  top: 12px;
+  display: flex;
+  gap: 10px;
+}
 
-/* buttons */
+/* =========================
+   Buttons
+========================= */
 .btn {
   appearance: none;
   border: 1px solid var(--line);
@@ -84,9 +105,7 @@ body {
   box-shadow: var(--shadow);
 }
 
-.hero {
-  padding: 18px 16px 16px;
-}
+.hero { padding: 18px 16px 16px; }
 
 .title {
   margin: 0;
@@ -122,14 +141,12 @@ body {
   color: rgba(255,255,255,0.9);
 }
 
-/* nav */
 .navgrid {
   margin-top: 14px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
-
 @media (min-width: 640px) {
   .navgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
@@ -159,7 +176,8 @@ body {
 }
 
 /* =========================
-   Member Page Layout
+   Member Page Layout (保留你之前 members 的樣式)
+   你如果已經有 members 那套，這段可以照用
 ========================= */
 .page-member {
   min-height: 100vh;
@@ -173,7 +191,6 @@ body {
   gap: 16px;
 }
 
-/* 手機：leaders 置頂上下並列 */
 .leader-stack {
   display: grid;
   gap: 12px;
@@ -185,26 +202,20 @@ body {
   letter-spacing: 0.06em;
 }
 
-/* PC：leaders 真固定在左側（fixed） */
 @media (min-width: 960px) {
-  .member-layout {
-    grid-template-columns: 1fr; /* 左側 fixed，不占 grid */
-  }
+  .member-layout { grid-template-columns: 1fr; }
 
   .leader-rail {
     position: fixed;
     left: 24px;
-    top: 86px; /* 避免貼太上面，可自行調 */
+    top: 86px;
     width: 260px;
     z-index: 10;
   }
 
-  .group-area {
-    margin-left: 300px; /* 260 + 間距 */
-  }
+  .group-area { margin-left: 300px; }
 }
 
-/* Cards */
 .member-card {
   appearance: none;
   border: 1px solid rgba(255,255,255,0.15);
@@ -234,11 +245,7 @@ body {
   display: block;
 }
 
-/* Accordion Groups */
-.group-list {
-  display: grid;
-  gap: 12px;
-}
+.group-list { display: grid; gap: 12px; }
 
 .group-item {
   border: 1px solid rgba(255,255,255,0.14);
@@ -256,7 +263,6 @@ body {
   padding: 12px 14px;
   user-select: none;
 }
-
 .group-summary::-webkit-details-marker { display: none; }
 
 .group-name {
@@ -278,18 +284,15 @@ body {
   background: rgba(255,255,255,0.04);
 }
 
-/* 展開後的成員卡片格 */
 .member-grid--group {
   padding: 12px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
-
 @media (min-width: 640px) {
   .member-grid--group { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-
 @media (min-width: 960px) {
   .member-grid--group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
@@ -297,12 +300,7 @@ body {
 /* =========================
    Modal
 ========================= */
-.modal {
-  position: fixed;
-  inset: 0;
-  display: none;
-  z-index: 999;
-}
+.modal { position: fixed; inset: 0; display: none; z-index: 999; }
 .modal.is-open { display: block; }
 
 .modal-backdrop {
