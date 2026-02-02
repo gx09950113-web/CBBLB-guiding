@@ -125,7 +125,7 @@ body {
   background-image:
     radial-gradient(1200px 800px at 20% 10%, rgba(0,0,0,0.65), transparent 55%),
     radial-gradient(900px 700px at 80% 30%, rgba(0,0,0,0.55), transparent 60%),
-    url("../img/homepage%2520bg.png"); /* 檔名真的含 %20 */
+    url("../img/homepage-bg.png"); 
 
   background-size: cover;
   background-position: center;
@@ -448,3 +448,4 @@ body {
   color: #fff;
   text-decoration: none;
 }
+
