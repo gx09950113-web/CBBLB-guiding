@@ -1,69 +1,59 @@
 (() => {
   const audio = document.getElementById("bgm");
-  const btnMute = document.getElementById("btnMute");
-  const tapToPlay = document.getElementById("tapToPlay");
+  const muteBtn = document.getElementById("muteBtn");
+  const hint = document.getElementById("autoplayHint");
 
-  if (!audio || !btnMute) return;
+  // 你說「預設播放音量 15db」
+  // Web Audio/HTMLAudio 的 volume 是 0~1 線性值，不是 dB。
+  // 這裡用 0.15 當作「15% 音量」的合理對應（等同於偏小聲）。
+  audio.volume = 0.15;
 
-  // 你指定「預設播放音量 15db」
-  // 以一般網頁音量理解：-15 dB（衰減 15 dB）≈ 10^(-15/20) ≈ 0.178
-  const gainMinus15dB = Math.pow(10, -15 / 20);
-  audio.volume = gainMinus15dB;
+  function setMuted(isMuted) {
+    audio.muted = isMuted;
+    muteBtn.setAttribute("aria-pressed", String(isMuted));
+    muteBtn.textContent = isMuted ? "🔇 聲音：關" : "🔊 聲音：開";
+  }
 
-  const setBtnLabel = () => {
-    // muted 或音量 0 都視為靜音
-    const muted = audio.muted || audio.volume === 0;
-    btnMute.textContent = muted ? "🔇 靜音中" : "🔊 音樂";
-  };
+  // 預設不靜音，嘗試自動播放
+  setMuted(false);
 
-  const tryAutoplay = async () => {
+  async function tryAutoplay() {
     try {
-      // iOS / Chrome 等可能會擋
       await audio.play();
-      tapToPlay.hidden = true;
-      setBtnLabel();
-    } catch (err) {
-      // 自動播放被擋 → 顯示提示
-      tapToPlay.hidden = false;
-      setBtnLabel();
+      hint.hidden = true;
+    } catch (e) {
+      // 自動播放被擋住：顯示提示
+      hint.hidden = false;
     }
-  };
+  }
 
-  // 靜音切換
-  btnMute.addEventListener("click", async () => {
-    audio.muted = !audio.muted;
+  // 點按靜音按鈕：切換靜音；若還沒播放，順便嘗試播放
+  muteBtn.addEventListener("click", async () => {
+    const nextMuted = !audio.muted;
+    setMuted(nextMuted);
 
-    // 如果剛好被擋，這次點擊是「使用者互動」，通常可以成功播放
-    if (!audio.muted) {
-      try {
-        await audio.play();
-        tapToPlay.hidden = true;
-      } catch (e) {
-        tapToPlay.hidden = false;
-      }
+    // 如果使用者剛互動，通常就允許播放了
+    try {
+      await audio.play();
+      hint.hidden = true;
+    } catch (e) {
+      // 仍被擋也沒關係
+      hint.hidden = false;
     }
-
-    setBtnLabel();
   });
 
-  // 若被擋，點任意處也能啟動
-  const unlock = async () => {
-    try {
-      await audio.play();
-      tapToPlay.hidden = true;
-      document.removeEventListener("click", unlock);
-      document.removeEventListener("touchstart", unlock);
-    } catch (e) {
-      // 仍被擋就保持提示
-      tapToPlay.hidden = false;
+  // 使用者點任何地方，也嘗試解鎖播放（更符合手機實際狀況）
+  document.addEventListener("pointerdown", async () => {
+    if (audio.paused) {
+      try {
+        await audio.play();
+        hint.hidden = true;
+      } catch (e) {
+        hint.hidden = false;
+      }
     }
-    setBtnLabel();
-  };
+  }, { once: true });
 
-  document.addEventListener("click", unlock, { passive: true });
-  document.addEventListener("touchstart", unlock, { passive: true });
-
-  // 首次嘗試
-  setBtnLabel();
+  // 開始嘗試自動播放
   tryAutoplay();
 })();
