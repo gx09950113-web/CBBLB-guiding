@@ -32,7 +32,7 @@ function setupExclusiveBgm(audioEl, storageKey) {
   // -15 dB 轉成 HTMLAudioElement.volume (0~1)
   // dB = 20*log10(A) => A = 10^(dB/20)
   // -15dB => 約 0.1778
-  audioEl.volume = 0.18;
+  audioEl.volume = 0.05;
 
   // 記錄目前這頁的 bgm（同一個 tab 切頁時避免殘留）
   try {
