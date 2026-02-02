@@ -245,6 +245,17 @@ body {
   display: block;
 }
 
+/* members 頁：用變數估 header 高度，讓固定欄避開 */
+.page-member {
+  --header-h: 86px; /* 你要更高就改這裡 */
+}
+
+@media (min-width: 960px) {
+  .page-member .leader-rail {
+    top: calc(var(--header-h) + 16px);
+  }
+}
+
 .group-list { display: grid; gap: 12px; }
 
 .group-item {
@@ -373,3 +384,4 @@ body {
   color: #fff;
   text-decoration: none;
 }
+
