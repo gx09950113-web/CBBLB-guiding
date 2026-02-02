@@ -385,3 +385,25 @@ body {
   text-decoration: none;
 }
 
+/* =========================
+   Home Page Background
+========================= */
+.page-home {
+  background-image:
+    radial-gradient(1200px 800px at 20% 10%, rgba(0,0,0,0.55), transparent 55%),
+    radial-gradient(900px 700px at 80% 30%, rgba(0,0,0,0.45), transparent 60%),
+    url("../img/homepage%20bg.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* 桌面有沉浸感 */
+}
+
+/* 手機避免 fixed 造成效能問題 */
+@media (max-width: 768px) {
+  .page-home {
+    background-attachment: scroll;
+  }
+}
+
