@@ -30,6 +30,7 @@
     <section class="group-area" aria-label="成員分類">
       <h1 class="member-title">活躍成員</h1>
       <div class="group-list" id="groupList"></div>
+      <p id="loadError" style="display:none; margin-top:12px; opacity:.9;"></p>
     </section>
   </main>
 
@@ -74,13 +75,14 @@
 
     const leaderStack = document.getElementById("leaderStack");
     const groupList = document.getElementById("groupList");
+    const loadError = document.getElementById("loadError");
 
     // 供點卡片時快速開 modal
     let membersIndex = null;
 
     async function loadData() {
       const res = await fetch(DATA_URL, { cache: "no-store" });
-      if (!res.ok) throw new Error("members.json 讀取失敗");
+      if (!res.ok) throw new Error("members.json 讀取失敗（HTTP " + res.status + "）");
       return await res.json();
     }
 
@@ -95,6 +97,7 @@
       img.src = member.image || "";
       img.alt = "";
       img.loading = "lazy";
+      img.onerror = () => { img.style.visibility = "hidden"; }; // 破圖時先隱藏避免醜
 
       btn.appendChild(img);
       return btn;
@@ -167,6 +170,7 @@
     const modalName = document.getElementById("modalName");
     const modalTitle = document.getElementById("modalTitle");
     const modalBio = document.getElementById("modalBio");
+    const modalLinks = document.getElementById("modalLinks"); // ✅ 你原本少了這行
     let lastFocusEl = null;
 
     function openModal(member) {
@@ -234,7 +238,11 @@
       renderLeaders(leaders);
       renderGroups(members);
       enableAccordion();
-    })().catch(console.error);
+    })().catch((err) => {
+      console.error(err);
+      loadError.style.display = "block";
+      loadError.textContent = "資料載入失敗：請確認 assets/data/members.json 路徑與 JSON 格式是否正確。";
+    });
   </script>
 
   <!-- members 背景音樂邏輯（切頁不重疊、音量 0.15、不給關） -->
