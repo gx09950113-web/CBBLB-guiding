@@ -1,8 +1,12 @@
 /* =========================================================
-   WTTF - style.css（完整版・可覆蓋）
-   ✅ 首頁：導覽按鈕(navgrid)移到方塊(card hero)上方（CSS 方式，不改 HTML）
+   WTTF - style.css（完整版・可覆蓋・2026-02）
+   ✅ 首頁：導覽按鈕(navgrid)在方塊(card hero)上方（CSS 不改 HTML）
    ✅ 按鈕 hover：背景變暗 + 紅色光暈 pulse（文字不變色、一直閃）
-   ✅ 首頁背景圖：homepage-bg.png（不動）
+   ✅ Members：
+      - LOGO 圖（1587x2245）等比例自適應螢幕（不變形）
+      - 手機：社主/副社主固定在 LOGO 下面、分類上面
+      - 分類收折時：浮窗（玻璃浮框 + 陰影 + 微浮起）
+   ✅ Events：背景/字體/卡片階梯（保留）
 ========================================================= */
 
 /* =========================
@@ -38,6 +42,7 @@
   --radius: 18px;
   --radius-sm: 14px;
 
+  /* 預設 header 高度（各頁可覆寫） */
   --header-h: 86px;
 
   /* Hover 光暈顏色 */
@@ -60,7 +65,7 @@ body {
 }
 
 /* =========================
-   2) Header / Logo
+   2) Header / Logo（通用）
 ========================= */
 .top-logo {
   position: sticky;
@@ -165,7 +170,7 @@ body {
   .page-home { background-attachment: scroll; }
 }
 
-/* ✅ 這裡是「按鈕在方塊上方」的關鍵：container 變成 flex 並用 order 排序 */
+/* ✅ 首頁：container 變 flex 並用 order 排序 */
 .page-home .container{
   max-width: 980px;
   margin: 0 auto;
@@ -173,7 +178,7 @@ body {
 
   display: flex;
   flex-direction: column;
-  gap: 14px; /* 原本 navgrid margin-top 改用 gap 更乾淨 */
+  gap: 14px;
 }
 
 /* 預設 container（非首頁）仍保持原樣 */
@@ -226,9 +231,7 @@ body {
 .page-home .navgrid { order: 1; }
 .page-home .card.hero { order: 2; }
 
-/* =========================
-   Home nav grid
-========================= */
+/* Home nav grid */
 .navgrid {
   margin-top: 14px;
   display: grid;
@@ -274,23 +277,27 @@ body {
 }
 
 /* =========================
-   5) Members Page
+   5) Members Page（重點更新）
 ========================= */
-.page-member {
+
+/* Members：讓 footer 能貼底（視覺更穩） */
+.page-member{
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 
-  /* ✅ 讓 members 頁的 header 高度可控 */
-  --header-h: 110px;
+  /* ✅ header 高度跟著螢幕縮放：避免你 1587x2245 的 LOGO 撐爆 */
+  --header-h: clamp(92px, 14vw, 148px);
 
-  /* ✅ 手機版：社主列高度（可依你卡片大小微調） */
-  --leader-mobile-h: 128px;
+  /* ✅ 手機固定社主列高度（可微調） */
+  --leader-mobile-h: clamp(108px, 24vw, 148px);
 
-  /* ✅ 讓頁面內容從 LOGO 下方開始（避免被 header 蓋住） */
+  /* ✅ 預設 padding：避免內容被 fixed header 壓住 */
   padding: calc(var(--header-h) + 16px) 14px 20px;
 }
 
-/* ✅ members 頁：LOGO 固定置頂，並鎖定高度讓下面定位可算 */
-.page-member .top-logo {
+/* ✅ members 頁：LOGO 真的固定在最上方（高度固定由變數控制） */
+.page-member .top-logo{
   position: fixed;
   top: 0;
   left: 0;
@@ -306,16 +313,19 @@ body {
   border-bottom: 1px solid var(--line2);
 }
 
-.page-member .logo-link { display: inline-block; }
-
-/* ✅ LOGO 圖自適應：寬度用 clamp + 高度用 max-height 限制 */
-.page-member .logo-main {
-  width: clamp(160px, 58vw, 420px);              /* ✅ 自適應螢幕 */
-  height: auto;
-  max-height: calc(var(--header-h) - 24px);       /* ✅ 不會撐爆 header */
+/* ✅ LOGO 1587x2245：等比例，不變形；用「高度」控制，寬度自動 */
+.page-member .logo-main{
+  height: calc(var(--header-h) - 24px); /* 扣掉上下 padding */
+  width: auto;                          /* ✅ 等比例（1587x2245） */
+  max-width: min(88vw, 520px);          /* ✅ 太寬時限制 */
+  object-fit: contain;                  /* ✅ 保證不裁切不變形 */
   display: block;
   margin: 0 auto;
 }
+
+/* main 撐開，footer 推到底 */
+.page-member .member-layout{ flex: 1; }
+.page-member .footer{ margin-top: auto; }
 
 /* layout */
 .member-layout {
@@ -325,10 +335,7 @@ body {
   gap: 16px;
 }
 
-.leader-stack {
-  display: grid;
-  gap: 12px;
-}
+.leader-stack { display: grid; gap: 12px; }
 
 .member-title {
   margin: 0 0 12px;
@@ -336,18 +343,145 @@ body {
   letter-spacing: 0.06em;
 }
 
+/* member cards（leaders + 成員共用） */
+.member-card {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.24);
+  background: rgba(0,0,0,0.52);
+  border-radius: 16px;
+  padding: 10px;
+  cursor: pointer;
+
+  box-shadow: var(--shadow);
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+.member-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.42);
+}
+
+.member-card:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.65);
+  outline-offset: 3px;
+}
+
+.member-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+/* Accordion list */
+.group-list { display: grid; gap: 12px; }
+
 /* =========================
-   Mobile / Tablet：社主列固定在 LOGO 下方
-   - 目標：社主/副社主在 LOGO 下面 & 其他分類上面
+   Members：分類卡片（浮窗效果）
+========================= */
+
+/* 基本外框（玻璃） */
+.group-item {
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 16px;
+  background: rgba(0,0,0,0.46);
+  overflow: hidden;
+  position: relative;
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease,
+    background .18s ease;
+}
+
+/* ✅ 收折時：浮窗（更明顯的陰影 + 微浮起） */
+.group-item:not([open]){
+  background: rgba(0,0,0,0.50);
+  box-shadow: 0 18px 42px rgba(0,0,0,0.44);
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.24);
+}
+
+/* 收折 hover：更像浮窗 */
+.group-item:not([open]):hover{
+  transform: translateY(-3px);
+  box-shadow: 0 26px 60px rgba(0,0,0,0.55);
+  border-color: rgba(255,255,255,0.34);
+}
+
+/* 浮窗光暈（收折時） */
+.group-item:not([open])::before{
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 16px;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 120px at 20% 0%, rgba(255,255,255,0.10), transparent 55%),
+    radial-gradient(700px 120px at 80% 0%, rgba(255,255,255,0.08), transparent 55%);
+  opacity: .9;
+}
+
+/* summary */
+.group-summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  user-select: none;
+}
+.group-summary::-webkit-details-marker { display: none; }
+
+.group-name {
+  font-size: 18px;
+  letter-spacing: 0.06em;
+}
+
+.group-meta {
+  opacity: 0.85;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.24);
+  background: rgba(255,255,255,0.12);
+}
+
+/* 展開時 */
+.group-item[open] .group-summary {
+  border-bottom: 1px solid rgba(255,255,255,0.20);
+  background: rgba(255,255,255,0.08);
+}
+
+/* 展開後成員卡片格 */
+.member-grid--group {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .member-grid--group { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 960px) {
+  .member-grid--group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* =========================
+   Members：手機/平板（社主列固定在 LOGO 下方）
 ========================= */
 @media (max-width: 959px) {
-  /* ✅ 內容要再往下讓出「社主固定列」的高度 */
-  .page-member {
+  /* ✅ 內容再往下讓出「社主固定列」高度 */
+  .page-member{
     padding-top: calc(var(--header-h) + var(--leader-mobile-h) + 18px);
+    padding-bottom: 40px;
   }
 
-  /* ✅ 社主欄變成固定列：永遠在 LOGO 下方 */
-  .leader-rail {
+  /* ✅ 社主欄固定：LOGO 下方 */
+  .leader-rail{
     position: fixed;
     left: 14px;
     right: 14px;
@@ -355,7 +489,6 @@ body {
     height: var(--leader-mobile-h);
     z-index: 55;
 
-    /* 視覺同你原本玻璃感 */
     border: 1px solid rgba(255,255,255,0.18);
     border-radius: 16px;
     background: rgba(0,0,0,0.40);
@@ -366,8 +499,8 @@ body {
     overflow: hidden;
   }
 
-  /* ✅ 手機：社主卡片橫排（兩張卡並排），保持固定列高度內 */
-  .leader-stack {
+  /* ✅ 兩張卡並排 */
+  .leader-stack{
     height: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -375,13 +508,12 @@ body {
     align-items: stretch;
   }
 
-  /* ✅ 手機：讓卡片在固定列裡變矮，不會被擠爆 */
-  .leader-rail .member-card {
+  .leader-rail .member-card{
     padding: 8px;
     border-radius: 14px;
   }
 
-  .leader-rail .member-card img {
+  .leader-rail .member-card img{
     width: 100%;
     height: 100%;
     aspect-ratio: 1 / 1;
@@ -390,14 +522,11 @@ body {
     display: block;
   }
 
-  /* ✅ 右側分類區（現在會自然在固定列下面開始） */
-  .group-area {
-    margin-left: 0;
-  }
+  .group-area{ margin-left: 0; }
 }
 
 /* =========================
-   PC：leaders 固定左側（維持你原本設計）
+   Members：PC（leaders 固定左側）
 ========================= */
 @media (min-width: 960px) {
   .member-layout { grid-template-columns: 1fr; }
@@ -407,16 +536,11 @@ body {
     left: 24px;
     width: 260px;
     z-index: 10;
-
-    /* ✅ 固定在 LOGO 下面，不會被擋 */
     top: calc(var(--header-h) + 16px);
   }
 
-  .group-area {
-    margin-left: 300px;
-  }
+  .group-area { margin-left: 300px; }
 }
-
 
 /* =========================
    6) Modal
@@ -427,7 +551,6 @@ body {
   display: none;
   z-index: 999;
 }
-
 .modal.is-open { display: block; }
 
 .modal-backdrop {
@@ -515,7 +638,6 @@ body {
    背景圖：assets/img/events-bg.png
    音樂：assets/sounds/events.mp3 (JS 控制)
 ========================================================= */
-
 .page-events {
   font-size: 18px;
   min-height: 100vh;
@@ -623,7 +745,7 @@ body {
   margin-right: 2%;
 }
 
-/* 再加一點水平位移，讓「階梯」更明顯 */
+/* 再加一點水平位移，讓「階梯」更明顯（保留你的設定） */
 .event-card:nth-child(odd) {
   transform: translateY(calc(var(--step) * 8px)) translateX(0px);
 }
@@ -669,12 +791,8 @@ body {
   grid-template-columns: 52px 1fr;
   gap: 10px;
 }
-.event-card__row .k {
-  opacity: .75;
-}
-.event-card__row .v {
-  word-break: break-word;
-}
+.event-card__row .k { opacity: .75; }
+.event-card__row .v { word-break: break-word; }
 
 /* Body */
 .event-card__body {
@@ -724,4 +842,3 @@ body {
     transform: translateY(calc(var(--step) * 6px));
   }
 }
-
