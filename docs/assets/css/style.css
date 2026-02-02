@@ -1,5 +1,5 @@
 /* =========================================================
-   WTTF - style.css (整理版)
+   WTTF - style.css (完整版・不透明度加強版)
    路徑假設：
    - CSS：docs/assets/css/style.css
    - FONT：docs/assets/fonts/ThePeakFontBeta_V0_102.ttf
@@ -24,17 +24,19 @@
   --bg: #0b0c10;
   --fg: #ffffff;
 
-  --muted: rgba(255, 255, 255, 0.75);
-  --muted2: rgba(255, 255, 255, 0.60);
+  --muted: rgba(255, 255, 255, 0.78);
+  --muted2: rgba(255, 255, 255, 0.65);
 
-  --line: rgba(255, 255, 255, 0.14);
-  --line2: rgba(255, 255, 255, 0.10);
+  /* 🔥 提高邊框可見度 */
+  --line: rgba(255, 255, 255, 0.24);
+  --line2: rgba(255, 255, 255, 0.18);
 
-  --panel: rgba(0, 0, 0, 0.28);
-  --panel2: rgba(255, 255, 255, 0.06);
+  /* 🔥 提高面板不透明度 */
+  --panel: rgba(0, 0, 0, 0.46);
+  --panel2: rgba(255, 255, 255, 0.14);
 
-  --shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
-  --shadow2: 0 24px 60px rgba(0, 0, 0, 0.60);
+  --shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+  --shadow2: 0 24px 60px rgba(0, 0, 0, 0.65);
 
   --radius: 18px;
   --radius-sm: 14px;
@@ -59,8 +61,6 @@ body {
 
 /* =========================
    2) Header / Logo
-   - LOGO 置中置頂
-   - 右上角可放按鈕（首頁的 mute）
 ========================= */
 .top-logo {
   position: sticky;
@@ -69,14 +69,12 @@ body {
   padding: 12px 14px;
   text-align: center;
 
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.48);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line2);
 }
 
-.logo-link {
-  display: inline-block;
-}
+.logo-link { display: inline-block; }
 
 .logo-main {
   width: clamp(160px, 55vw, 360px);
@@ -85,7 +83,6 @@ body {
   margin: 0 auto;
 }
 
-/* 首頁有 mute 按鈕：固定在 header 右上角 */
 .top-actions {
   position: absolute;
   right: 14px;
@@ -106,23 +103,29 @@ body {
   border-radius: 999px;
   cursor: pointer;
   user-select: none;
+  transition: background .15s ease, border-color .15s ease, transform .1s ease;
 }
 
-.btn:hover { border-color: rgba(255,255,255,0.28); }
+.btn:hover {
+  background: rgba(255,255,255,0.24);
+  border-color: rgba(255,255,255,0.42);
+}
+
+.btn:active { transform: translateY(1px); }
 
 .btn-ghost {
-  background: rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.55);
+  border-color: rgba(255,255,255,0.32);
 }
 
 /* =========================
    4) Home Page
 ========================= */
 .page-home {
-  /* 背景圖在檔名內含 %20（字面檔名） */
   background-image:
-    radial-gradient(1200px 800px at 20% 10%, rgba(0,0,0,0.55), transparent 55%),
-    radial-gradient(900px 700px at 80% 30%, rgba(0,0,0,0.45), transparent 60%),
-    url("../img/homepage-bg.png");
+    radial-gradient(1200px 800px at 20% 10%, rgba(0,0,0,0.65), transparent 55%),
+    radial-gradient(900px 700px at 80% 30%, rgba(0,0,0,0.55), transparent 60%),
+    url("../img/homepage%2520bg.png"); /* 檔名真的含 %20 */
 
   background-size: cover;
   background-position: center;
@@ -162,7 +165,7 @@ body {
 
 .divider {
   height: 1px;
-  background: rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.16);
   margin: 16px 0;
 }
 
@@ -176,11 +179,11 @@ body {
 
 .hint {
   margin: 14px 0 0;
-  padding: 12px 12px;
+  padding: 12px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255, 210, 80, 0.08);
-  color: rgba(255,255,255,0.9);
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(255, 210, 80, 0.12);
+  color: rgba(255,255,255,0.95);
 }
 
 /* Home nav */
@@ -204,23 +207,24 @@ body {
   color: var(--fg);
 
   border: 1px solid var(--line);
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.18);
   border-radius: var(--radius-sm);
   padding: 12px 10px;
 
-  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-  transition: transform .15s ease, border-color .15s ease;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
 }
 
 .navbtn:hover {
-  border-color: rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.30);
+  border-color: rgba(255,255,255,0.46);
   transform: translateY(-1px);
 }
 
 .footer {
   text-align: center;
   padding: 18px 12px 26px;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.60);
 }
 
 /* =========================
@@ -229,7 +233,6 @@ body {
 .page-member {
   min-height: 100vh;
   padding: 20px 14px;
-  /* members 若 header 高度不同，只改這個 */
   --header-h: 86px;
 }
 
@@ -240,7 +243,6 @@ body {
   gap: 16px;
 }
 
-/* leaders：手機置頂上下並列 */
 .leader-stack {
   display: grid;
   gap: 12px;
@@ -252,7 +254,6 @@ body {
   letter-spacing: 0.06em;
 }
 
-/* PC：leaders 真固定在左側 */
 @media (min-width: 960px) {
   .member-layout { grid-template-columns: 1fr; }
 
@@ -265,15 +266,14 @@ body {
   }
 
   .group-area {
-    margin-left: 300px; /* 260 + 間距 */
+    margin-left: 300px;
   }
 }
 
-/* member cards（leaders + 成員共用） */
 .member-card {
   appearance: none;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.24);
+  background: rgba(0,0,0,0.52);
   border-radius: 16px;
   padding: 10px;
   cursor: pointer;
@@ -284,12 +284,7 @@ body {
 
 .member-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(255,255,255,0.28);
-}
-
-.member-card:focus-visible {
-  outline: 2px solid rgba(255,255,255,0.65);
-  outline-offset: 3px;
+  border-color: rgba(255,255,255,0.42);
 }
 
 .member-card img {
@@ -300,16 +295,16 @@ body {
   display: block;
 }
 
-/* Accordion list */
+/* Accordion */
 .group-list {
   display: grid;
   gap: 12px;
 }
 
 .group-item {
-  border: 1px solid rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.22);
   border-radius: 16px;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0,0,0,0.46);
   overflow: hidden;
 }
 
@@ -333,20 +328,20 @@ body {
 }
 
 .group-meta {
-  opacity: 0.75;
+  opacity: 0.85;
   font-size: 14px;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.24);
+  background: rgba(255,255,255,0.12);
 }
 
 .group-item[open] .group-summary {
-  border-bottom: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.20);
+  background: rgba(255,255,255,0.08);
 }
 
-/* 展開後的成員卡片格 */
+/* 展開後成員 */
 .member-grid--group {
   padding: 12px;
   display: grid;
@@ -377,7 +372,7 @@ body {
 .modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.68);
   backdrop-filter: blur(6px);
 }
 
@@ -388,8 +383,8 @@ body {
   width: min(720px, calc(100vw - 24px));
   transform: translate(-50%, -50%);
 
-  background: rgba(12, 12, 14, 0.92);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(10, 10, 12, 0.96);
+  border: 1px solid rgba(255,255,255,0.26);
   border-radius: var(--radius);
   box-shadow: var(--shadow2);
 }
@@ -403,8 +398,8 @@ body {
   height: 40px;
 
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.16);
-  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.26);
+  background: rgba(255,255,255,0.12);
   color: #fff;
   cursor: pointer;
 }
@@ -423,12 +418,16 @@ body {
   height: 88px;
   border-radius: 16px;
   object-fit: cover;
-  border: 1px solid rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.26);
 }
 
 .modal-name { margin: 0; font-size: 22px; }
-.modal-role { margin: 6px 0 0; opacity: 0.78; }
-.modal-bio { margin: 12px 0 0; line-height: 1.7; opacity: 0.92; }
+.modal-role { margin: 6px 0 0; opacity: 0.85; }
+.modal-bio {
+  margin: 12px 0 0;
+  line-height: 1.7;
+  opacity: 0.95;
+}
 
 .modal-links {
   display: flex;
@@ -443,11 +442,9 @@ body {
   padding: 8px 10px;
 
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.16);
-  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.26);
+  background: rgba(255,255,255,0.14);
 
   color: #fff;
   text-decoration: none;
 }
-
-
