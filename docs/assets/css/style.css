@@ -278,10 +278,46 @@ body {
 ========================= */
 .page-member {
   min-height: 100vh;
-  padding: 20px 14px;
-  --header-h: 86px;
+
+  /* ✅ 讓 members 頁的 header 高度可控 */
+  --header-h: 110px;
+
+  /* ✅ 手機版：社主列高度（可依你卡片大小微調） */
+  --leader-mobile-h: 128px;
+
+  /* ✅ 讓頁面內容從 LOGO 下方開始（避免被 header 蓋住） */
+  padding: calc(var(--header-h) + 16px) 14px 20px;
 }
 
+/* ✅ members 頁：LOGO 固定置頂，並鎖定高度讓下面定位可算 */
+.page-member .top-logo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-h);
+  z-index: 60;
+
+  padding: 12px 14px;
+  text-align: center;
+
+  background: rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line2);
+}
+
+.page-member .logo-link { display: inline-block; }
+
+/* ✅ LOGO 圖自適應：寬度用 clamp + 高度用 max-height 限制 */
+.page-member .logo-main {
+  width: clamp(160px, 58vw, 420px);              /* ✅ 自適應螢幕 */
+  height: auto;
+  max-height: calc(var(--header-h) - 24px);       /* ✅ 不會撐爆 header */
+  display: block;
+  margin: 0 auto;
+}
+
+/* layout */
 .member-layout {
   max-width: 1200px;
   margin: 0 auto;
@@ -300,7 +336,69 @@ body {
   letter-spacing: 0.06em;
 }
 
-/* PC：leaders 固定左側 */
+/* =========================
+   Mobile / Tablet：社主列固定在 LOGO 下方
+   - 目標：社主/副社主在 LOGO 下面 & 其他分類上面
+========================= */
+@media (max-width: 959px) {
+  /* ✅ 內容要再往下讓出「社主固定列」的高度 */
+  .page-member {
+    padding-top: calc(var(--header-h) + var(--leader-mobile-h) + 18px);
+  }
+
+  /* ✅ 社主欄變成固定列：永遠在 LOGO 下方 */
+  .leader-rail {
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    top: var(--header-h);
+    height: var(--leader-mobile-h);
+    z-index: 55;
+
+    /* 視覺同你原本玻璃感 */
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 16px;
+    background: rgba(0,0,0,0.40);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  /* ✅ 手機：社主卡片橫排（兩張卡並排），保持固定列高度內 */
+  .leader-stack {
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  /* ✅ 手機：讓卡片在固定列裡變矮，不會被擠爆 */
+  .leader-rail .member-card {
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  .leader-rail .member-card img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+  }
+
+  /* ✅ 右側分類區（現在會自然在固定列下面開始） */
+  .group-area {
+    margin-left: 0;
+  }
+}
+
+/* =========================
+   PC：leaders 固定左側（維持你原本設計）
+========================= */
 @media (min-width: 960px) {
   .member-layout { grid-template-columns: 1fr; }
 
@@ -309,6 +407,8 @@ body {
     left: 24px;
     width: 260px;
     z-index: 10;
+
+    /* ✅ 固定在 LOGO 下面，不會被擋 */
     top: calc(var(--header-h) + 16px);
   }
 
@@ -317,98 +417,6 @@ body {
   }
 }
 
-/* member cards（leaders + 成員共用） */
-.member-card {
-  appearance: none;
-  border: 1px solid rgba(255,255,255,0.24);
-  background: rgba(0,0,0,0.52);
-  border-radius: 16px;
-  padding: 10px;
-  cursor: pointer;
-
-  box-shadow: var(--shadow);
-  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
-}
-
-.member-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255,255,255,0.42);
-}
-
-.member-card:focus-visible {
-  outline: 2px solid rgba(255,255,255,0.65);
-  outline-offset: 3px;
-}
-
-.member-card img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 12px;
-  display: block;
-}
-
-/* Accordion list */
-.group-list {
-  display: grid;
-  gap: 12px;
-}
-
-.group-item {
-  border: 1px solid rgba(255,255,255,0.22);
-  border-radius: 16px;
-  background: rgba(0,0,0,0.46);
-  overflow: hidden;
-}
-
-.group-summary {
-  list-style: none;
-  cursor: pointer;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 12px 14px;
-  user-select: none;
-}
-
-.group-summary::-webkit-details-marker { display: none; }
-
-.group-name {
-  font-size: 18px;
-  letter-spacing: 0.06em;
-}
-
-.group-meta {
-  opacity: 0.85;
-  font-size: 14px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.24);
-  background: rgba(255,255,255,0.12);
-}
-
-.group-item[open] .group-summary {
-  border-bottom: 1px solid rgba(255,255,255,0.20);
-  background: rgba(255,255,255,0.08);
-}
-
-/* 展開後成員卡片格 */
-.member-grid--group {
-  padding: 12px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-@media (min-width: 640px) {
-  .member-grid--group { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-
-@media (min-width: 960px) {
-  .member-grid--group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
 
 /* =========================
    6) Modal
@@ -716,3 +724,4 @@ body {
     transform: translateY(calc(var(--step) * 6px));
   }
 }
+
