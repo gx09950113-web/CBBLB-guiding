@@ -1,12 +1,13 @@
 /* =========================================================
    WTTF - style.css（完整版・可覆蓋・2026-02）
-   ✅ 首頁：導覽按鈕(navgrid)在方塊(card hero)上方（CSS 不改 HTML）
-   ✅ 按鈕 hover：背景變暗 + 紅色光暈 pulse（文字不變色、一直閃）
-   ✅ Members：
-      - LOGO 圖（1587x2245）等比例自適應螢幕（不變形）
-      - 手機/平板/PC：社主/副社主左右並列，置中固定於 LOGO 下面、分類/列表上面
-      - 分類收折時：浮窗（玻璃浮框 + 陰影 + 微浮起）
-   ✅ Events：背景/字體/卡片階梯（保留）
+   ✅ Home：navgrid 在 hero 上方（CSS 不改 HTML）
+   ✅ Buttons：hover 背景變暗 + 紅色光暈 pulse（文字不變色、一直閃）
+   ✅ Members（配合你提供的 HTML class 名）：
+      - LOGO 置中置頂（fixed）
+      - 社主/副社主圖 215x386：完整呈現（不裁切、不變形）
+      - 「活躍成員」固定在 leaders 下方、成員列表上方（不跟著滾動）
+      - 分類浮框總寬固定 772px；展開高度隨內容自適應
+   ✅ Events：保留（若你有 events 頁）
 ========================================================= */
 
 /* =========================
@@ -41,9 +42,6 @@
 
   --radius: 18px;
   --radius-sm: 14px;
-
-  /* 預設 header 高度（各頁可覆寫） */
-  --header-h: 86px;
 
   /* Hover 光暈顏色 */
   --glow-red: rgba(255, 60, 60, 0.85);
@@ -159,36 +157,28 @@ body {
     radial-gradient(1200px 800px at 20% 10%, rgba(0,0,0,0.65), transparent 55%),
     radial-gradient(900px 700px at 80% 30%, rgba(0,0,0,0.55), transparent 60%),
     url("../img/homepage-bg.png");
-
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
-
-@media (max-width: 768px) {
-  .page-home { background-attachment: scroll; }
-}
+@media (max-width: 768px) { .page-home { background-attachment: scroll; } }
 
 /* ✅ 首頁：container 變 flex 並用 order 排序 */
 .page-home .container{
   max-width: 980px;
   margin: 0 auto;
   padding: 18px 14px 28px;
-
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-
-/* 預設 container（非首頁）仍保持原樣 */
 .container{
   max-width: 980px;
   margin: 0 auto;
   padding: 18px 14px 28px;
 }
 
-/* 卡片 */
 .card {
   border: 1px solid var(--line);
   background: var(--panel);
@@ -196,28 +186,12 @@ body {
   box-shadow: var(--shadow);
 }
 
-/* Hero */
 .hero { padding: 18px 16px 16px; }
-.title {
-  margin: 0;
-  font-size: 34px;
-  letter-spacing: 0.08em;
-}
-.subtitle {
-  margin: 8px 0 0;
-  color: var(--muted);
-}
-.divider {
-  height: 1px;
-  background: rgba(255,255,255,0.16);
-  margin: 16px 0;
-}
+.title { margin: 0; font-size: 34px; letter-spacing: 0.08em; }
+.subtitle { margin: 8px 0 0; color: var(--muted); }
+.divider { height: 1px; background: rgba(255,255,255,0.16); margin: 16px 0; }
 .intro p { margin: 10px 0; }
-.rules {
-  margin: 12px 0 0;
-  padding-left: 18px;
-  color: var(--muted);
-}
+.rules { margin: 12px 0 0; padding-left: 18px; color: var(--muted); }
 .hint {
   margin: 14px 0 0;
   padding: 12px;
@@ -231,24 +205,18 @@ body {
 .page-home .navgrid { order: 1; }
 .page-home .card.hero { order: 2; }
 
-/* Home nav grid */
 .navgrid {
   margin-top: 14px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
+@media (min-width: 640px) { .navgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
-@media (min-width: 640px) {
-  .navgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-
-/* navbtn（不是 .btn） */
 .navbtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   text-decoration: none;
   color: var(--fg);
 
@@ -260,7 +228,6 @@ body {
   box-shadow: 0 8px 18px rgba(0,0,0,0.35);
   transition: background .15s ease, border-color .15s ease, transform .15s ease;
 }
-
 .navbtn:hover {
   background: rgba(0,0,0,0.55);
   border-color: rgba(255,255,255,0.46);
@@ -276,27 +243,28 @@ body {
   color: rgba(255,255,255,0.60);
 }
 
-/* =========================
-   5) Members Page（重點更新）
-========================= */
-
-/* Members：整頁用 flex 讓 footer 貼底 */
+/* =========================================================
+   5) Members Page（對應你提供的 HTML）
+========================================================= */
 .page-member{
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 
-  /* ✅ header 高度跟著螢幕縮放：避免 1587x2245 LOGO 撐爆 */
+  /* LOGO header 高度 */
   --header-h: clamp(92px, 14vw, 148px);
 
-  /* ✅ leader rail 高度（手機/平板用；PC 仍可用但會自動調整） */
-  --leader-mobile-h: clamp(108px, 24vw, 148px);
+  /* leaders rail 高度：容納 215x386 的完整圖（含 padding） */
+  --leader-h: clamp(230px, 32vw, 360px);
 
-  /* ✅ 預設 padding：避免內容被 fixed header + fixed leader rail 壓住 */
-  padding: calc(var(--header-h) + var(--leader-mobile-h) + 22px) 14px 20px;
+  /* 固定標題「活躍成員」高度 */
+  --member-title-h: 54px;
+
+  /* ✅ 內容區避開三個固定層 */
+  padding: calc(var(--header-h) + var(--leader-h) + var(--member-title-h) + 26px) 14px 20px;
 }
 
-/* ✅ members 頁：LOGO 固定在最上方 */
+/* ✅ Members：LOGO 固定置頂置中 */
 .page-member .top-logo{
   position: fixed;
   top: 0;
@@ -313,7 +281,7 @@ body {
   border-bottom: 1px solid var(--line2);
 }
 
-/* ✅ LOGO 1587x2245：等比例，不變形；用「高度」控制，寬度自動 */
+/* LOGO 等比例 */
 .page-member .logo-main{
   height: calc(var(--header-h) - 24px);
   width: auto;
@@ -323,75 +291,28 @@ body {
   margin: 0 auto;
 }
 
-/* main 撐開，footer 推到底 */
+/* main 撐開 footer */
 .page-member .member-layout{ flex: 1; }
 .page-member .footer{ margin-top: auto; }
 
-/* layout */
-.member-layout {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  gap: 16px;
-}
-
-.member-title {
-  margin: 0 0 12px;
-  font-size: 28px;
-  letter-spacing: 0.06em;
-}
-
-/* member cards（leaders + 成員共用） */
-.member-card {
-  appearance: none;
-  border: 1px solid rgba(255,255,255,0.24);
-  background: rgba(0,0,0,0.52);
-  border-radius: 16px;
-  padding: 10px;
-  cursor: pointer;
-
-  box-shadow: var(--shadow);
-  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
-}
-
-.member-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255,255,255,0.42);
-}
-
-.member-card:focus-visible {
-  outline: 2px solid rgba(255,255,255,0.65);
-  outline-offset: 3px;
-}
-
-.member-card img {
+/* 你 HTML 的 main.member-layout 是 grid（我們明確化） */
+.page-member .member-layout{
   width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 12px;
-  display: block;
+  display: block; /* ✅ 這裡改成 block，因為 leaders/group 都是 fixed/正常流不需要 grid 排版 */
 }
 
-/* Accordion list */
-.group-list { display: grid; gap: 12px; }
-
-/* =========================
-   Members：社主/副社主固定置中（手機/平板/PC 共用）
-========================= */
-
-/* ✅ 固定列：置中固定於 LOGO 下方（全尺寸皆適用） */
+/* =========================================================
+   Members：社主 / 副社主（固定於 LOGO 下方，置中）
+========================================================= */
 .page-member .leader-rail{
   position: fixed;
   top: var(--header-h);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 55;
+  z-index: 58;
 
-  /* ✅ 不貼邊，且 PC 也不會太寬 */
   width: min(860px, calc(100vw - 28px));
-
-  /* ✅ 高度：小螢幕用變數，大螢幕稍微收斂（更像一條 rail） */
-  height: min(var(--leader-mobile-h), 168px);
+  height: var(--leader-h);
 
   border: 1px solid rgba(255,255,255,0.18);
   border-radius: 16px;
@@ -403,7 +324,7 @@ body {
   overflow: hidden;
 }
 
-/* ✅ leader rail 內：永遠左右並列 */
+/* 兩張並排 */
 .page-member .leader-stack{
   height: 100%;
   display: grid;
@@ -412,29 +333,90 @@ body {
   align-items: stretch;
 }
 
-/* ✅ 兩張卡在 rail 內填滿 */
+/* leaders 卡片 */
 .page-member .leader-rail .member-card{
   height: 100%;
   padding: 8px;
   border-radius: 14px;
+
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(0,0,0,0.52);
+  box-shadow: var(--shadow);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* ✅ leaders 圖：215x386 完整呈現（不裁切、不變形） */
 .page-member .leader-rail .member-card img{
   width: 100%;
   height: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 12px;
+
+  /* 用原圖比例做框 */
+  aspect-ratio: 215 / 386;
+
+  /* ✅ 重要：完整顯示 */
+  object-fit: contain;
+  object-position: center;
+
   display: block;
+  border-radius: 12px;
+
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
 }
 
-/* ✅ 成員列表區：不需要再做 PC 左側 rail 讓位 */
-.page-member .group-area{ margin-left: 0; }
+/* =========================================================
+   Members：「活躍成員」固定在 leaders 下方（不滾動）
+========================================================= */
+.page-member .member-title{
+  position: fixed;
+  top: calc(var(--header-h) + var(--leader-h));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 57;
 
-/* =========================
-   Members：分類卡片（浮窗效果）
-========================= */
-.group-item {
+  width: min(772px, calc(100vw - 28px));
+  height: var(--member-title-h);
+
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+  letter-spacing: 0.10em;
+
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+  background: rgba(0,0,0,0.44);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+}
+
+/* =========================================================
+   Members：右側 group-area（其實現在是「固定區塊下的正常內容」）
+========================================================= */
+.page-member .group-area{
+  width: 100%;
+  display: grid;
+  justify-items: center; /* ✅ 讓 772px 浮框置中 */
+}
+
+/* group-list：置中 */
+.page-member .group-list{
+  width: 100%;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+
+/* =========================================================
+   Members：分類浮框（總寬固定 772px；展開高度自適應）
+========================================================= */
+.page-member .group-item{
+  width: min(772px, 100%);
   border: 1px solid rgba(255,255,255,0.22);
   border-radius: 16px;
   background: rgba(0,0,0,0.46);
@@ -447,23 +429,19 @@ body {
     background .18s ease;
 }
 
-/* ✅ 收折時：浮窗（更明顯的陰影 + 微浮起） */
-.group-item:not([open]){
+/* 收折：浮窗 */
+.page-member .group-item:not([open]){
   background: rgba(0,0,0,0.50);
   box-shadow: 0 18px 42px rgba(0,0,0,0.44);
   transform: translateY(-1px);
   border-color: rgba(255,255,255,0.24);
 }
-
-/* 收折 hover：更像浮窗 */
-.group-item:not([open]):hover{
+.page-member .group-item:not([open]):hover{
   transform: translateY(-3px);
   box-shadow: 0 26px 60px rgba(0,0,0,0.55);
   border-color: rgba(255,255,255,0.34);
 }
-
-/* 浮窗光暈（收折時） */
-.group-item:not([open])::before{
+.page-member .group-item:not([open])::before{
   content: "";
   position: absolute;
   inset: -1px;
@@ -476,7 +454,7 @@ body {
 }
 
 /* summary */
-.group-summary {
+.page-member .group-summary{
   list-style: none;
   cursor: pointer;
   display: flex;
@@ -485,14 +463,9 @@ body {
   padding: 12px 14px;
   user-select: none;
 }
-.group-summary::-webkit-details-marker { display: none; }
-
-.group-name {
-  font-size: 18px;
-  letter-spacing: 0.06em;
-}
-
-.group-meta {
+.page-member .group-summary::-webkit-details-marker { display: none; }
+.page-member .group-name{ font-size: 18px; letter-spacing: 0.06em; }
+.page-member .group-meta{
   opacity: 0.85;
   font-size: 14px;
   padding: 6px 10px;
@@ -501,36 +474,60 @@ body {
   background: rgba(255,255,255,0.12);
 }
 
-/* 展開時 */
-.group-item[open] .group-summary {
+/* 展開 */
+.page-member .group-item[open] .group-summary{
   border-bottom: 1px solid rgba(255,255,255,0.20);
   background: rgba(255,255,255,0.08);
 }
 
-/* 展開後成員卡片格 */
-.member-grid--group {
+/* 展開後 grid：高度自適應（不設固定 height） */
+.page-member .member-grid--group{
   padding: 12px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
-
 @media (min-width: 640px) {
-  .member-grid--group { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .page-member .member-grid--group { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (min-width: 960px) {
-  .member-grid--group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .page-member .member-grid--group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
-/* =========================
-   6) Modal
-========================= */
-.modal {
-  position: fixed;
-  inset: 0;
-  display: none;
-  z-index: 999;
+/* =========================================================
+   Members：一般成員卡（沿用你原本）
+========================================================= */
+.member-card {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.24);
+  background: rgba(0,0,0,0.52);
+  border-radius: 16px;
+  padding: 10px;
+  cursor: pointer;
+
+  box-shadow: var(--shadow);
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
 }
+.member-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.42);
+}
+.member-card:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.65);
+  outline-offset: 3px;
+}
+.member-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+/* =========================================================
+   6) Modal（沿用）
+========================================================= */
+.modal { position: fixed; inset: 0; display: none; z-index: 999; }
 .modal.is-open { display: block; }
 
 .modal-backdrop {
@@ -539,44 +536,31 @@ body {
   background: rgba(0,0,0,0.68);
   backdrop-filter: blur(6px);
 }
-
 .modal-panel {
   position: absolute;
   left: 50%;
   top: 50%;
   width: min(720px, calc(100vw - 24px));
   transform: translate(-50%, -50%);
-
   background: rgba(10, 10, 12, 0.96);
   border: 1px solid rgba(255,255,255,0.26);
   border-radius: var(--radius);
   box-shadow: var(--shadow2);
 }
-
 .modal-close {
   position: absolute;
   top: 10px;
   right: 10px;
-
   width: 40px;
   height: 40px;
-
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.26);
   background: rgba(255,255,255,0.12);
   color: #fff;
   cursor: pointer;
 }
-
 .modal-body { padding: 20px 18px 18px; }
-
-.modal-header {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
+.modal-header { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
 .modal-avatar {
   width: 88px;
   height: 88px;
@@ -584,39 +568,23 @@ body {
   object-fit: cover;
   border: 1px solid rgba(255,255,255,0.26);
 }
-
 .modal-name { margin: 0; font-size: 22px; }
 .modal-role { margin: 6px 0 0; opacity: 0.85; }
-.modal-bio {
-  margin: 12px 0 0;
-  line-height: 1.7;
-  opacity: 0.95;
-}
-
-.modal-links {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 14px;
-}
-
+.modal-bio { margin: 12px 0 0; line-height: 1.7; opacity: 0.95; }
+.modal-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
 .modal-link {
   display: inline-flex;
   align-items: center;
   padding: 8px 10px;
-
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.26);
   background: rgba(255,255,255,0.14);
-
   color: #fff;
   text-decoration: none;
 }
 
 /* =========================================================
-   Events Page (荷包活動)
-   背景圖：assets/img/events-bg.png
-   音樂：assets/sounds/events.mp3 (JS 控制)
+   Events（你若有用到就留著）
 ========================================================= */
 .page-events {
   font-size: 18px;
@@ -625,192 +593,4 @@ body {
   background:
     linear-gradient(180deg, rgba(0,0,0,.62), rgba(0,0,0,.78)),
     url("../img/events-bg.png") center / cover no-repeat fixed;
-}
-
-/* 讓 LOGO 自適應 */
-.page-events .top-logo {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  padding: 14px 14px 10px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 12px;
-  background: linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,0));
-  backdrop-filter: blur(6px);
-}
-
-.page-events .logo-link { justify-self: center; }
-.page-events .logo-main {
-  width: min(68vw, 360px);
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 10px 22px rgba(0,0,0,.45));
-}
-
-/* 靜音按鈕放右上（同一列） */
-.page-events .top-actions {
-  justify-self: end;
-  display: flex;
-  gap: 10px;
-}
-
-/* 若你已有 btn / btn-ghost，這裡只做 events 些微強化（不破壞原本） */
-.page-events .btn.btn-ghost {
-  border: 1px solid rgba(255,255,255,.18);
-  background: rgba(0,0,0,.35);
-  color: rgba(255,255,255,.92);
-  padding: 10px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: transform .15s ease, background .15s ease, border-color .15s ease;
-}
-.page-events .btn.btn-ghost:hover {
-  transform: translateY(-1px);
-  background: rgba(0,0,0,.48);
-  border-color: rgba(255,255,255,.26);
-}
-
-.events-wrap {
-  width: min(980px, calc(100% - 28px));
-  margin: 12px auto 56px;
-  padding: 10px 0 28px;
-}
-
-.events-title {
-  margin: 10px 0 18px;
-  text-align: center;
-  font-size: 22px;
-  letter-spacing: .08em;
-  text-shadow: 0 10px 24px rgba(0,0,0,.55);
-}
-
-.events-hint {
-  text-align: center;
-  opacity: .85;
-  padding: 18px 10px;
-}
-
-/* 階梯卡片容器 */
-.events-grid {
-  display: grid;
-  gap: 18px;
-}
-
-/* 卡片（玻璃浮框） */
-.event-card {
-  position: relative;
-  border-radius: 18px;
-  padding: 14px 16px 14px;
-  border: 1px solid rgba(255,255,255,.16);
-  background: rgba(0,0,0,.42);
-  box-shadow: 0 18px 42px rgba(0,0,0,.42);
-  backdrop-filter: blur(10px);
-  overflow: hidden;
-
-  /* 階梯：每張往下多一點 */
-  transform: translateY(calc(var(--step) * 8px));
-}
-
-/* 左右交錯：odd 左，even 右 */
-.event-card:nth-child(odd) {
-  justify-self: start;
-  width: min(720px, 92%);
-  margin-left: 2%;
-}
-.event-card:nth-child(even) {
-  justify-self: end;
-  width: min(720px, 92%);
-  margin-right: 2%;
-}
-
-/* Header */
-.event-card__header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.event-card__title {
-  font-size: 20px;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.event-card__badge {
-  font-size: 14px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.20);
-  background: rgba(255,255,255,.06);
-  white-space: nowrap;
-}
-
-/* Meta rows */
-.event-card__meta {
-  display: grid;
-  gap: 6px;
-  margin-bottom: 10px;
-  opacity: .95;
-}
-
-.event-card__row {
-  margin: 0;
-  display: grid;
-  grid-template-columns: 52px 1fr;
-  gap: 10px;
-}
-.event-card__row .k { opacity: .75; }
-.event-card__row .v { word-break: break-word; }
-
-/* Body */
-.event-card__body {
-  display: grid;
-  gap: 10px;
-}
-
-.event-card__desc {
-  margin: 0;
-  line-height: 1.65;
-  opacity: .92;
-}
-
-.event-card__link {
-  display: inline-flex;
-  width: fit-content;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.20);
-  background: rgba(0,0,0,.35);
-  color: rgba(255,255,255,.92);
-  text-decoration: none;
-  transition: transform .15s ease, background .15s ease, border-color .15s ease;
-}
-.event-card__link:hover {
-  transform: translateY(-1px);
-  background: rgba(0,0,0,.50);
-  border-color: rgba(255,255,255,.28);
-}
-
-/* 狀態視覺 */
-.event-card.status-upcoming { border-color: rgba(255,255,255,.22); }
-.event-card.status-ongoing  { border-color: rgba(255,255,255,.30); }
-.event-card.status-past     { opacity: .86; }
-
-/* 小螢幕：卡片改成整齊置中，階梯減弱 */
-@media (max-width: 520px) {
-  .event-card,
-  .event-card:nth-child(odd),
-  .event-card:nth-child(even) {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    justify-self: stretch;
-  }
-  .event-card {
-    transform: translateY(calc(var(--step) * 6px));
-  }
 }
