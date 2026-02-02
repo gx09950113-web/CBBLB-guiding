@@ -1,5 +1,13 @@
+/* =========================================================
+   WTTF - style.css (整理版)
+   路徑假設：
+   - CSS：docs/assets/css/style.css
+   - FONT：docs/assets/fonts/ThePeakFontBeta_V0_102.ttf
+   - IMG：docs/assets/img/...
+========================================================= */
+
 /* =========================
-   Font
+   0) Font
 ========================= */
 @font-face {
   font-family: "ThePeak";
@@ -10,15 +18,29 @@
 }
 
 /* =========================
-   Base
+   1) Base / Theme
 ========================= */
 :root {
   --bg: #0b0c10;
   --fg: #ffffff;
-  --muted: rgba(255,255,255,0.75);
-  --line: rgba(255,255,255,0.14);
-  --panel2: rgba(255,255,255,0.06);
-  --shadow: 0 10px 24px rgba(0,0,0,0.35);
+
+  --muted: rgba(255, 255, 255, 0.75);
+  --muted2: rgba(255, 255, 255, 0.60);
+
+  --line: rgba(255, 255, 255, 0.14);
+  --line2: rgba(255, 255, 255, 0.10);
+
+  --panel: rgba(0, 0, 0, 0.28);
+  --panel2: rgba(255, 255, 255, 0.06);
+
+  --shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  --shadow2: 0 24px 60px rgba(0, 0, 0, 0.60);
+
+  --radius: 18px;
+  --radius-sm: 14px;
+
+  /* Header 高度基準（members 固定欄避開用） */
+  --header-h: 86px;
 }
 
 * { box-sizing: border-box; }
@@ -27,28 +49,31 @@ html, body { height: 100%; }
 body {
   margin: 0;
   color: var(--fg);
-  background: radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,0.06), transparent 50%),
-              radial-gradient(900px 700px at 80% 30%, rgba(255,255,255,0.05), transparent 55%),
-              var(--bg);
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,0.06), transparent 50%),
+    radial-gradient(900px 700px at 80% 30%, rgba(255,255,255,0.05), transparent 55%),
+    var(--bg);
   font-family: "ThePeak", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", Arial, sans-serif;
   line-height: 1.5;
 }
 
 /* =========================
-   Top Logo (centered)
+   2) Header / Logo
+   - LOGO 置中置頂
+   - 右上角可放按鈕（首頁的 mute）
 ========================= */
 .top-logo {
   position: sticky;
   top: 0;
   z-index: 20;
   padding: 12px 14px;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255,255,255,0.10);
   text-align: center;
+
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line2);
 }
 
-/* 讓 LOGO 永遠置中，不受右側按鈕影響 */
 .logo-link {
   display: inline-block;
 }
@@ -60,7 +85,7 @@ body {
   margin: 0 auto;
 }
 
-/* 靜音按鈕固定在右上角 */
+/* 首頁有 mute 按鈕：固定在 header 右上角 */
 .top-actions {
   position: absolute;
   right: 14px;
@@ -70,7 +95,7 @@ body {
 }
 
 /* =========================
-   Buttons
+   3) Buttons
 ========================= */
 .btn {
   appearance: none;
@@ -90,8 +115,25 @@ body {
 }
 
 /* =========================
-   Home layout
+   4) Home Page
 ========================= */
+.page-home {
+  /* 背景圖在檔名內含 %20（字面檔名） */
+  background-image:
+    radial-gradient(1200px 800px at 20% 10%, rgba(0,0,0,0.55), transparent 55%),
+    radial-gradient(900px 700px at 80% 30%, rgba(0,0,0,0.45), transparent 60%),
+    url("../img/homepage%20bg.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+@media (max-width: 768px) {
+  .page-home { background-attachment: scroll; }
+}
+
 .container {
   max-width: 980px;
   margin: 0 auto;
@@ -100,8 +142,8 @@ body {
 
 .card {
   border: 1px solid var(--line);
-  background: rgba(0,0,0,0.28);
-  border-radius: 18px;
+  background: var(--panel);
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
 
@@ -135,18 +177,20 @@ body {
 .hint {
   margin: 14px 0 0;
   padding: 12px 12px;
-  border-radius: 14px;
+  border-radius: var(--radius-sm);
   border: 1px solid rgba(255,255,255,0.14);
   background: rgba(255, 210, 80, 0.08);
   color: rgba(255,255,255,0.9);
 }
 
+/* Home nav */
 .navgrid {
   margin-top: 14px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
+
 @media (min-width: 640px) {
   .navgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
@@ -155,13 +199,17 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   text-decoration: none;
   color: var(--fg);
+
   border: 1px solid var(--line);
   background: rgba(255,255,255,0.06);
-  border-radius: 14px;
+  border-radius: var(--radius-sm);
   padding: 12px 10px;
+
   box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  transition: transform .15s ease, border-color .15s ease;
 }
 
 .navbtn:hover {
@@ -176,12 +224,13 @@ body {
 }
 
 /* =========================
-   Member Page Layout (保留你之前 members 的樣式)
-   你如果已經有 members 那套，這段可以照用
+   5) Members Page
 ========================= */
 .page-member {
   min-height: 100vh;
   padding: 20px 14px;
+  /* members 若 header 高度不同，只改這個 */
+  --header-h: 86px;
 }
 
 .member-layout {
@@ -191,6 +240,7 @@ body {
   gap: 16px;
 }
 
+/* leaders：手機置頂上下並列 */
 .leader-stack {
   display: grid;
   gap: 12px;
@@ -202,20 +252,24 @@ body {
   letter-spacing: 0.06em;
 }
 
+/* PC：leaders 真固定在左側 */
 @media (min-width: 960px) {
   .member-layout { grid-template-columns: 1fr; }
 
   .leader-rail {
     position: fixed;
     left: 24px;
-    top: 86px;
     width: 260px;
     z-index: 10;
+    top: calc(var(--header-h) + 16px);
   }
 
-  .group-area { margin-left: 300px; }
+  .group-area {
+    margin-left: 300px; /* 260 + 間距 */
+  }
 }
 
+/* member cards（leaders + 成員共用） */
 .member-card {
   appearance: none;
   border: 1px solid rgba(255,255,255,0.15);
@@ -223,8 +277,9 @@ body {
   border-radius: 16px;
   padding: 10px;
   cursor: pointer;
-  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+
   box-shadow: var(--shadow);
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
 }
 
 .member-card:hover {
@@ -245,18 +300,11 @@ body {
   display: block;
 }
 
-/* members 頁：用變數估 header 高度，讓固定欄避開 */
-.page-member {
-  --header-h: 86px; /* 你要更高就改這裡 */
+/* Accordion list */
+.group-list {
+  display: grid;
+  gap: 12px;
 }
-
-@media (min-width: 960px) {
-  .page-member .leader-rail {
-    top: calc(var(--header-h) + 16px);
-  }
-}
-
-.group-list { display: grid; gap: 12px; }
 
 .group-item {
   border: 1px solid rgba(255,255,255,0.14);
@@ -268,12 +316,15 @@ body {
 .group-summary {
   list-style: none;
   cursor: pointer;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   padding: 12px 14px;
   user-select: none;
 }
+
 .group-summary::-webkit-details-marker { display: none; }
 
 .group-name {
@@ -295,23 +346,32 @@ body {
   background: rgba(255,255,255,0.04);
 }
 
+/* 展開後的成員卡片格 */
 .member-grid--group {
   padding: 12px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
+
 @media (min-width: 640px) {
   .member-grid--group { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
 @media (min-width: 960px) {
   .member-grid--group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 /* =========================
-   Modal
+   6) Modal
 ========================= */
-.modal { position: fixed; inset: 0; display: none; z-index: 999; }
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 999;
+}
+
 .modal.is-open { display: block; }
 
 .modal-backdrop {
@@ -327,18 +387,21 @@ body {
   top: 50%;
   width: min(720px, calc(100vw - 24px));
   transform: translate(-50%, -50%);
+
   background: rgba(12, 12, 14, 0.92);
   border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 18px;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow2);
 }
 
 .modal-close {
   position: absolute;
   top: 10px;
   right: 10px;
+
   width: 40px;
   height: 40px;
+
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.16);
   background: rgba(255,255,255,0.06);
@@ -378,32 +441,11 @@ body {
   display: inline-flex;
   align-items: center;
   padding: 8px 10px;
+
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.16);
   background: rgba(255,255,255,0.06);
+
   color: #fff;
   text-decoration: none;
 }
-
-/* =========================
-   Home Page Background
-========================= */
-.page-home {
-  background-image:
-    radial-gradient(1200px 800px at 20% 10%, rgba(0,0,0,0.55), transparent 55%),
-    radial-gradient(900px 700px at 80% 30%, rgba(0,0,0,0.45), transparent 60%),
-    url("../img/homepage%20bg.png");
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed; /* 桌面有沉浸感 */
-}
-
-/* 手機避免 fixed 造成效能問題 */
-@media (max-width: 768px) {
-  .page-home {
-    background-attachment: scroll;
-  }
-}
-
