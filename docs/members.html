@@ -3,21 +3,25 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>錢包比臉薄｜成員</title>
+  <title>錢包比臉薄｜活躍成員</title>
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 
 <body class="page-member">
+  <!-- Members 背景音樂（不提供關閉按鈕） -->
+  <audio id="bgmMembers" preload="auto" loop playsinline autoplay>
+    <source src="assets/sounds/members.mp3" type="audio/mpeg" />
+  </audio>
 
   <main class="member-layout">
-    <!-- 左側：社主/副社主（PC 真固定） -->
+    <!-- 左側：社主 / 副社主（PC 真固定） -->
     <aside class="leader-rail" aria-label="社主與副社主">
       <div class="leader-stack" id="leaderStack"></div>
     </aside>
 
-    <!-- 右側：分類（手風琴） -->
+    <!-- 右側：分類手風琴 -->
     <section class="group-area" aria-label="成員分類">
-      <h1 class="member-title">成員</h1>
+      <h1 class="member-title">活躍成員</h1>
       <div class="group-list" id="groupList"></div>
     </section>
   </main>
@@ -45,6 +49,7 @@
   </div>
 
   <script>
+    // members.json 建議放在：docs/assets/data/members.json
     const DATA_URL = "assets/data/members.json";
 
     // ✅ 分類順序：完全照你列的串文
@@ -148,7 +153,7 @@
       }, true);
     }
 
-    // ===== Modal（沿用你前面的需求：點卡片才讀 JSON 顯示介紹）=====
+    // ===== Modal =====
     const modal = document.getElementById("memberModal");
     const modalImg = document.getElementById("modalImg");
     const modalName = document.getElementById("modalName");
@@ -212,7 +217,6 @@
     // ===== init =====
     (async function init() {
       const data = await loadData();
-
       const leaders = data.leaders || [];
       const members = data.members || [];
 
@@ -225,5 +229,8 @@
       enableAccordion();
     })().catch(console.error);
   </script>
+
+  <!-- members 背景音樂邏輯（切頁不重疊、音量 0.15、不給關） -->
+  <script src="assets/js/app-members.js"></script>
 </body>
 </html>
