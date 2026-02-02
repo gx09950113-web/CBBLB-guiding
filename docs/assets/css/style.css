@@ -110,6 +110,27 @@ body {
   background: rgba(255,255,255,0.24);
   border-color: rgba(255,255,255,0.42);
 }
+/* =========================
+   Button Hover：變暗 + 文字閃紅一下
+========================= */
+
+/* 1) hover 時按鈕底色更暗 */
+.btn:hover{
+  background: rgba(0,0,0,0.62);        /* 更暗 */
+  border-color: rgba(255,255,255,0.46);
+}
+
+/* 2) 文字閃紅一下：用 animation 做「瞬間紅 -> 回原色」 */
+.btn:hover{
+  animation: btnFlashText .22s ease-out 1;
+}
+
+/* 文字閃紅動畫（作用在按鈕本身的 color） */
+@keyframes btnFlashText{
+  0%   { color: var(--fg); }
+  35%  { color: #ff3b3b; }  /* 閃一下紅字 */
+  100% { color: var(--fg); }
+}
 
 .btn:active { transform: translateY(1px); }
 
@@ -448,4 +469,5 @@ body {
   color: #fff;
   text-decoration: none;
 }
+
 
