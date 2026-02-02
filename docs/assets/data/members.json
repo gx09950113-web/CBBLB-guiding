@@ -29,7 +29,7 @@
     { "id": "k001", "name": "林超祥", "title": "超哥", "group": "麒麟", "image": "assets/img/members/7.png", "bio": "鳴金影" },
     { "id": "k002", "name": "白面青天包龍星", "title": "龍哥", "group": "麒麟", "image": "assets/img/members/8.png", "bio": "鳴金影"},
     { "id": "k003", "name": "我只要SSR", "title": "SSR", "group": "麒麟", "image": "assets/img/members/9.png", "bio": "牽絲霖"},
-    { "id": "k004", "name": "沫、", "title": "", "group": "麒麟", "image": "assets/img/members/10.png", "bio": "裂石威"},
+    { "id": "k004", "name": "沫、", "title": "沫哥", "group": "麒麟", "image": "assets/img/members/10.png", "bio": "裂石威"},
 
     { "id": "l001", "name": "黑白花貓", "title": "花貓", "group": "龍驤", "image": "assets/img/members/11.png", "bio": "鳴金影" },
     { "id": "l002", "name": "秋離音", "title": "秋離音", "group": "龍驤", "image": "assets/img/members/12.png", "bio": ""},
@@ -47,7 +47,7 @@
     { "id": "f002", "name": "小小勳", "title": "小小勳", "group": "鳳鳴", "image": "assets/img/members/22.png", "bio": "破竹風"},
     { "id": "f003", "name": "墨染浪次", "title": "墨染", "group": "鳳鳴", "image": "assets/img/members/23.png", "bio": "牽絲玉"},
     { "id": "f004", "name": "雪冥", "title": "", "group": "鳳鳴", "image": "assets/img/members/24.png", "bio": "裂石威"},
-    { "id": "f005", "name": "貝聿銘", "title": "阿貝", "group": "鳳鳴", "image": "assets/img/members/25.png", "bio": "（鳳鳴介紹）" },
+    { "id": "f005", "name": "貝聿銘", "title": "阿貝", "group": "鳳鳴", "image": "assets/img/members/25.png", "bio": "鳴金影" },
 
     { "id": "g001", "name": "無法選中", "title": "小無老師", "group": "神威", "image": "assets/img/members/26.png", "bio": "牽絲玉" },
     { "id": "g002", "name": "花若似情未了", "title": "花老闆", "group": "神威", "image": "assets/img/members/27.png", "bio": "破竹風" },
