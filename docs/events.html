@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>錢包比臉薄｜荷包活動</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body class="page-events">
+  <!-- 背景音樂（預設播放、可靜音） -->
+  <audio id="bgmEvents" preload="auto" loop playsinline autoplay>
+    <source src="assets/sounds/events.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- LOGO 置中置頂（自適應） -->
+  <header class="top-logo">
+    <a class="logo-link" href="index.html" aria-label="回到首頁">
+      <img class="logo-main" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
+    </a>
+
+    <!-- 靜音按鈕（顯示於 LOGO 區） -->
+    <div class="top-actions">
+      <button id="muteBtnEvents" class="btn btn-ghost" type="button" aria-pressed="false" title="靜音 / 取消靜音">
+        🔊
+      </button>
+    </div>
+  </header>
+
+  <main class="events-wrap" aria-label="荷包活動">
+    <h1 class="events-title">荷包活動</h1>
+
+    <!-- 這裡會由 JS 渲染階梯卡片 -->
+    <section id="eventsGrid" class="events-grid" aria-live="polite"></section>
+
+    <!-- 讀取失敗或無資料時顯示 -->
+    <p id="eventsHint" class="events-hint" hidden>目前沒有活動資料。</p>
+  </main>
+
+  <script src="assets/js/events.js"></script>
+</body>
+</html>
