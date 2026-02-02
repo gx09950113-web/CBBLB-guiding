@@ -589,7 +589,9 @@ body {
 }
 
 /* =========================================================
-   Events（你若有用到就留著）
+   7) Events（以 JSON 資料為中心的卡片）
+   - 搭配 app-events.js 產出的 DOM 結構
+   - event-card / event-card__* / status-* / --step
 ========================================================= */
 .page-events {
   font-size: 18px;
@@ -599,4 +601,239 @@ body {
     linear-gradient(180deg, rgba(0,0,0,.62), rgba(0,0,0,.78)),
     url("../img/events-bg.png") center / cover no-repeat fixed;
 }
+@media (max-width: 768px) { .page-events { background-attachment: scroll; } }
+
+/* events 主容器（你 events.html 有 events-wrap 就會吃到；沒有也不會壞） */
+.page-events .events-wrap{
+  width: min(1100px, 92vw);
+  margin: 0 auto;
+  padding: 18px 0 56px;
+}
+
+/* 標題 */
+.page-events .events-title{
+  margin: 12px 0 14px;
+  text-align: center;
+  font-size: 22px;
+  letter-spacing: .10em;
+  opacity: .95;
+}
+
+/* 靜音按鈕列（若 HTML 有 events-actions 就會吃到） */
+.page-events .events-actions{
+  position: sticky;
+  top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+  z-index: 25;
+}
+
+/* 卡片容器 */
+.page-events #eventsGrid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding-top: 10px;
+}
+
+/* >= 860px：左右交錯 + 階梯（用 --step 做 Y 位移） */
+@media (min-width: 860px){
+  .page-events #eventsGrid{
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 22px;
+    align-items: start;
+  }
+
+  /* 左右交錯 */
+  .page-events #eventsGrid .event-card:nth-child(odd){
+    grid-column: 1;
+    transform:
+      translateX(-10px)
+      translateY(calc(var(--step) * 8px));
+  }
+  .page-events #eventsGrid .event-card:nth-child(even){
+    grid-column: 2;
+    transform:
+      translateX(10px)
+      translateY(calc(var(--step) * 8px));
+  }
+}
+
+/* ========== Event Card ========== */
+.event-card{
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 18px;
+  background: rgba(0,0,0,0.46);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.45);
+  overflow: hidden;
+
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    background .18s ease;
+}
+
+/* 卡片光澤（不靠資料、純氛圍） */
+.event-card::before{
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 18px;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 160px at 22% 0%, rgba(255,255,255,0.12), transparent 58%),
+    radial-gradient(700px 140px at 80% 0%, rgba(255,255,255,0.10), transparent 62%);
+  opacity: .85;
+}
+
+/* hover：變亮 + 微抬起 */
+.event-card:hover{
+  border-color: rgba(255,255,255,0.38);
+  box-shadow: 0 22px 52px rgba(0,0,0,0.60);
+  transform: translateY(-2px);
+}
+
+/* Header */
+.event-card__header{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+}
+
+.event-card__title{
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: .06em;
+  line-height: 1.35;
+}
+
+/* Badge（依 status 變色） */
+.event-card__badge{
+  flex: 0 0 auto;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.26);
+  background: rgba(255,255,255,0.12);
+  opacity: .95;
+  white-space: nowrap;
+}
+
+/* Meta */
+.event-card__meta{
+  padding: 10px 14px 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.event-card__row{
+  margin: 0;
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 10px;
+  align-items: start;
+  font-size: 14px;
+  opacity: .95;
+}
+
+.event-card__row .k{
+  opacity: .75;
+  letter-spacing: .08em;
+}
+.event-card__row .v{
+  color: rgba(255,255,255,0.92);
+  word-break: break-word;
+}
+
+/* Body */
+.event-card__body{
+  padding: 0 14px 14px;
+}
+
+.event-card__desc{
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.90);
+}
+
+/* 若你之後加 link 才會用到 */
+.event-card__link{
+  display: inline-flex;
+  margin-top: 12px;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.24);
+  background: rgba(255,255,255,0.14);
+  color: var(--fg);
+  text-decoration: none;
+}
+.event-card__link:hover{
+  background: rgba(0,0,0,0.55);
+  border-color: rgba(255,255,255,0.46);
+}
+
+/* ========== Status styles（資料驅動） ========== */
+/* 進行中：偏綠 */
+.status-ongoing{
+  border-color: rgba(120, 255, 170, 0.26);
+}
+.status-ongoing .event-card__badge{
+  border-color: rgba(120, 255, 170, 0.40);
+  background: rgba(120, 255, 170, 0.14);
+}
+
+/* 即將：偏藍 */
+.status-upcoming{
+  border-color: rgba(120, 190, 255, 0.26);
+}
+.status-upcoming .event-card__badge{
+  border-color: rgba(120, 190, 255, 0.40);
+  background: rgba(120, 190, 255, 0.14);
+}
+
+/* 既往：偏灰 */
+.status-past{
+  border-color: rgba(255,255,255,0.18);
+  filter: saturate(0.85);
+}
+.status-past .event-card__badge{
+  opacity: .80;
+  background: rgba(255,255,255,0.10);
+}
+
+/* 預告/未知：偏黃 */
+.status-unknown{
+  border-color: rgba(255, 220, 120, 0.22);
+}
+.status-unknown .event-card__badge{
+  border-color: rgba(255, 220, 120, 0.38);
+  background: rgba(255, 220, 120, 0.14);
+}
+
+/* 提示文字 */
+.page-events .events-hint{
+  width: min(900px, 92vw);
+  margin: 18px auto 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.18);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: .95;
+}
+
 
