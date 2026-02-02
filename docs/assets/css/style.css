@@ -298,3 +298,230 @@ body.page-home{
     max-width: 94vw;
   }
 }
+
+
+/* =========================
+   Member Page Layout
+========================= */
+.page-member {
+  min-height: 100vh;
+  padding: 20px 14px;
+}
+
+.member-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
+}
+
+/* 手機：leaders 置頂上下並列 */
+.leader-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.member-title {
+  margin: 0 0 12px;
+  font-size: 28px;
+  letter-spacing: 0.06em;
+}
+
+/* =========================
+   PC：leaders 真固定在左側
+   - 用 fixed 讓它不是 sticky（完全跟著視窗）
+   - 右側主內容用 margin-left 避開
+========================= */
+@media (min-width: 960px) {
+  .member-layout {
+    grid-template-columns: 1fr; /* 因為左側用 fixed 了，主內容獨立 */
+  }
+
+  .leader-rail {
+    position: fixed;
+    left: 24px;              /* 你可微調距離 */
+    top: 24px;
+    width: 260px;
+    z-index: 10;
+  }
+
+  .group-area {
+    margin-left: 300px;      /* 260 + 邊距，避免被 leaders 蓋到 */
+  }
+}
+
+/* =========================
+   Card
+========================= */
+.member-card {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.35);
+  border-radius: 16px;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+}
+
+.member-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.28);
+}
+
+.member-card:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.65);
+  outline-offset: 3px;
+}
+
+.member-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+/* =========================
+   Accordion Groups
+========================= */
+.group-list {
+  display: grid;
+  gap: 12px;
+}
+
+.group-item {
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  background: rgba(0,0,0,0.25);
+  overflow: hidden;
+}
+
+.group-summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  user-select: none;
+}
+
+.group-summary::-webkit-details-marker { display: none; }
+
+.group-name {
+  font-size: 18px;
+  letter-spacing: 0.06em;
+}
+
+.group-meta {
+  opacity: 0.75;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+}
+
+.group-item[open] .group-summary {
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+
+/* 展開後的成員卡片格 */
+.member-grid--group {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .member-grid--group { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 960px) {
+  .member-grid--group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* =========================
+   Modal（如果你原本 style.css 已有，可忽略這段）
+========================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 999;
+}
+.modal.is-open { display: block; }
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+}
+
+.modal-panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(720px, calc(100vw - 24px));
+  transform: translate(-50%, -50%);
+  background: rgba(12, 12, 14, 0.92);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  cursor: pointer;
+}
+
+.modal-body { padding: 20px 18px 18px; }
+
+.modal-header {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.modal-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.16);
+}
+
+.modal-name { margin: 0; font-size: 22px; }
+.modal-role { margin: 6px 0 0; opacity: 0.78; }
+.modal-bio { margin: 12px 0 0; line-height: 1.7; opacity: 0.92; }
+
+.modal-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.modal-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  text-decoration: none;
+}
