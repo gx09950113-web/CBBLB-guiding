@@ -2,17 +2,27 @@
    Global / Theme
 ========================= */
 :root{
-  --bg-overlay: rgba(0,0,0,.55);
-  --card: rgba(20,20,24,.72);
-  --border: rgba(255,255,255,.12);
+  --overlay: rgba(0,0,0,.58);
+
   --text: rgba(255,255,255,.92);
-  --muted: rgba(255,255,255,.72);
-  --shadow: 0 12px 40px rgba(0,0,0,.35);
+  --muted: rgba(255,255,255,.74);
+
+  --card: rgba(18,18,22,.76);
+  --border: rgba(255,255,255,.18);
+  --shadow: 0 14px 44px rgba(0,0,0,.42);
+
+  /* 按鈕修正：加亮底色 + 更強對比 */
+  --btn-bg: rgba(255,255,255,.14);
+  --btn-bg-hover: rgba(255,255,255,.22);
+  --btn-border: rgba(255,255,255,.28);
+  --btn-border-hover: rgba(255,255,255,.38);
+
   --radius: 18px;
 }
 
 *{ box-sizing: border-box; }
 html, body{ height: 100%; }
+html, body{ overflow-x: hidden; }
 
 body{
   margin: 0;
@@ -23,55 +33,44 @@ body{
 
 /* =========================
    Page Backgrounds
-   - 首頁專用：避免被其他樣式覆蓋
+   - 首頁專用 (body.page-home)
+   - 修正：用引號包住路徑，確保 %20 能解析
 ========================= */
 body.page-home{
   background:
-    linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+    linear-gradient(var(--overlay), var(--overlay)),
     url("../img/homepage%20bg.png") center / cover no-repeat fixed;
 }
 
-/* 若你之後其他頁也想同款背景，可加：
-body.page-default{
-  background:
-    linear-gradient(var(--bg-overlay), var(--bg-overlay)),
-    url("../img/xxx.png") center / cover no-repeat fixed;
-}
-*/
-
 /* =========================
    Header / Logo (Home)
-   - LOGO 置中置頂
-   - 桌機原圖大小顯示 (1950x1200)
 ========================= */
 .top-logo{
   position: relative;
   text-align: center;
-  padding-top: 12px;
-  padding-bottom: 8px;
+  padding: 14px 18px 10px;
 
-  /* 上方薄薄一層霧面，讓 LOGO 在亮背景也清楚 */
   background: rgba(0,0,0,.18);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
 }
 
 .logo-main{
-  display: inline-block;
+  display: block;
+  margin: 0 auto;
 
-  /* 原圖大小顯示 */
+  /* ✅ 等比例縮放，避免 22 吋螢幕橫向捲動 */
   width: auto;
   height: auto;
-  max-width: none;
-  max-height: none;
 
-  /* 防止被其他 reset 影響 */
-  object-fit: initial;
+  /* 22 吋(1920)不需左右滑：限制最大寬度 */
+  max-width: min(1800px, 96vw);
 
-  filter: drop-shadow(0 12px 30px rgba(0,0,0,.45));
+  object-fit: contain;
+  filter: drop-shadow(0 14px 32px rgba(0,0,0,.50));
 }
 
-/* 靜音按鈕：固定在右上角 */
+/* 靜音按鈕：固定右上角 */
 .top-actions{
   position: absolute;
   top: 16px;
@@ -82,19 +81,31 @@ body.page-default{
    Buttons
 ========================= */
 .btn{
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.08);
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
   color: var(--text);
-  padding: 10px 12px;
+  padding: 10px 14px;
   border-radius: 999px;
   cursor: pointer;
   user-select: none;
+  line-height: 1;
+  box-shadow: 0 10px 26px rgba(0,0,0,.22);
 }
-.btn:hover{ background: rgba(255,255,255,.12); }
+
+.btn:hover{
+  background: var(--btn-bg-hover);
+  border-color: var(--btn-border-hover);
+}
+
 .btn:active{ transform: translateY(1px); }
 
 .btn-ghost{
-  background: rgba(0,0,0,.20);
+  background: rgba(0,0,0,.28);
+  border-color: rgba(255,255,255,.30);
+}
+.btn-ghost:hover{
+  background: rgba(0,0,0,.38);
+  border-color: rgba(255,255,255,.42);
 }
 
 /* =========================
@@ -103,7 +114,7 @@ body.page-default{
 .container{
   max-width: 980px;
   margin: 0 auto;
-  padding: 24px 18px 40px;
+  padding: 22px 18px 40px;
 }
 
 /* =========================
@@ -151,15 +162,16 @@ body.page-default{
 
 .hint{
   margin-top: 14px;
-  color: rgba(255,255,255,.86);
-  background: rgba(255,193,7,.12);
-  border: 1px solid rgba(255,193,7,.35);
+  color: rgba(255,255,255,.90);
+  background: rgba(255,193,7,.14);
+  border: 1px solid rgba(255,193,7,.40);
   padding: 10px 12px;
   border-radius: 12px;
 }
 
 /* =========================
    Navigation Grid
+   - 修正按鈕與背景重合：加更亮底色＋清楚 hover
 ========================= */
 .navgrid{
   margin-top: 18px;
@@ -176,18 +188,26 @@ body.page-default{
   text-decoration: none;
   color: var(--text);
 
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.07);
+  border: 1px solid var(--btn-border);
+  background: rgba(255,255,255,.16);
   border-radius: 14px;
 
   padding: 14px 12px;
-  font-weight: 650;
+  font-weight: 750;
+  letter-spacing: .4px;
 
-  transition: transform .08s ease, background .12s ease;
+  box-shadow: 0 10px 26px rgba(0,0,0,.22);
+  transition: transform .08s ease, background .12s ease, border-color .12s ease;
 }
 
-.navbtn:hover{ background: rgba(255,255,255,.12); }
-.navbtn:active{ transform: translateY(1px); }
+.navbtn:hover{
+  background: rgba(255,255,255,.26);
+  border-color: var(--btn-border-hover);
+}
+
+.navbtn:active{
+  transform: translateY(1px);
+}
 
 /* =========================
    Footer
@@ -195,22 +215,21 @@ body.page-default{
 .footer{
   text-align: center;
   padding: 16px 0 24px;
-  color: rgba(255,255,255,.55);
+  color: rgba(255,255,255,.62);
 }
 
 /* =========================
    Responsive
 ========================= */
 @media (max-width: 768px){
-  /* 手機保命：LOGO 不能爆版 */
-  .logo-main{
-    max-width: 92vw;
-    height: auto;
-  }
-
   /* 手機背景 fixed 可能卡頓 */
   body.page-home{
     background-attachment: scroll;
+  }
+
+  .top-actions{
+    top: 12px;
+    right: 12px;
   }
 
   .navgrid{
@@ -219,5 +238,10 @@ body.page-default{
 
   .hero .title{
     font-size: 28px;
+  }
+
+  /* 手機保命：LOGO 不能爆版 */
+  .logo-main{
+    max-width: 94vw;
   }
 }
