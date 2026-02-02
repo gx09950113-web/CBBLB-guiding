@@ -1,13 +1,21 @@
 /* =========================================================
-   WTTF - events.js
+   WTTF - events.js (re-designed for your JSON schema)
+   JSON example:
+   {
+     "events":[
+       { "title": "...", "description": "...", "start": "即日起", "end": "2026-02-15 22:00(UTC+8)", "location": "...", "tag": "抽獎" }
+     ]
+   }
+
    - 讀取 data/events.json
    - 渲染階梯狀左右交錯卡片
    - 背景音樂預設播放、可靜音
-   - 音樂切頁不重疊（簡易通用版）
+   - 音樂切頁不重疊 + 離開分頁自動停止（tab/background）
+   - 音量 -35dB
 ========================================================= */
 
 const EVENTS_JSON = "data/events.json";
-const AUDIO_KEY = "wttf_active_bgm"; // 用來避免同一分頁切換造成多音軌
+const AUDIO_KEY = "wttf_active_bgm_events";
 
 document.addEventListener("DOMContentLoaded", () => {
   const audio = document.getElementById("bgmEvents");
@@ -19,8 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
   loadAndRenderEvents();
 });
 
-/** 音樂：切頁不重疊（同網域同分頁） */
+/** 音樂：切頁不重疊 + 離開分頁停止 */
 function setupExclusiveBgm(audioEl, storageKey) {
+  if (!audioEl) return;
+
   // 先停掉頁面內其他 audio（保險）
   document.querySelectorAll("audio").forEach(a => {
     if (a !== audioEl) {
@@ -29,23 +39,16 @@ function setupExclusiveBgm(audioEl, storageKey) {
     }
   });
 
-  // -15 dB 轉成 HTMLAudioElement.volume (0~1)
-  // dB = 20*log10(A) => A = 10^(dB/20)
-  // -15dB => 約 0.1778
-  audioEl.volume = 0.01;
+  // -35 dB => A = 10^(dB/20) = 10^(-35/20) ≈ 0.0178
+  audioEl.volume = 0.018;
 
   // 記錄目前這頁的 bgm（同一個 tab 切頁時避免殘留）
-  try {
-    sessionStorage.setItem(storageKey, location.pathname);
-  } catch {}
+  try { sessionStorage.setItem(storageKey, location.pathname); } catch {}
 
-  // 某些手機/瀏覽器會擋 autoplay：遇到就等使用者互動再播
   const tryPlay = () => audioEl.play().catch(() => {});
   tryPlay();
 
-  // 回到此頁（bfcache）時確保不重疊
   window.addEventListener("pageshow", () => {
-    // 如果 sessionStorage 記錄不是本頁，表示剛切回來或切頁流程怪異：重置播放狀態
     let active = "";
     try { active = sessionStorage.getItem(storageKey) || ""; } catch {}
     if (active && active !== location.pathname) {
@@ -59,11 +62,28 @@ function setupExclusiveBgm(audioEl, storageKey) {
   // 離開頁面就停止（避免某些情境 audio 還在）
   window.addEventListener("pagehide", () => {
     try { audioEl.pause(); } catch {}
+    audioEl.currentTime = 0;
+  });
+
+  // ✅ 離開分頁/切到背景：停止 + 歸零
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      try { audioEl.pause(); } catch {}
+      audioEl.currentTime = 0;
+    }
+  });
+
+  // ✅ 視窗失焦保險（桌面切換視窗）
+  window.addEventListener("blur", () => {
+    try { audioEl.pause(); } catch {}
+    audioEl.currentTime = 0;
   });
 }
 
 /** 靜音按鈕 */
 function setupMuteButton(audioEl, btnEl) {
+  if (!audioEl || !btnEl) return;
+
   const sync = () => {
     const muted = audioEl.muted;
     btnEl.setAttribute("aria-pressed", muted ? "true" : "false");
@@ -87,6 +107,7 @@ async function loadAndRenderEvents() {
   const grid = document.getElementById("eventsGrid");
   const hint = document.getElementById("eventsHint");
 
+  if (!grid) return;
   grid.innerHTML = "";
 
   try {
@@ -94,92 +115,168 @@ async function loadAndRenderEvents() {
     if (!res.ok) throw new Error("events.json 讀取失敗");
     const data = await res.json();
 
-    const events = Array.isArray(data?.events) ? data.events : [];
-    if (!events.length) {
-      hint.hidden = false;
+    const list = Array.isArray(data?.events) ? data.events : [];
+    if (!list.length) {
+      if (hint) {
+        hint.hidden = false;
+        hint.textContent = "目前沒有活動資料。";
+      }
       return;
     }
-    hint.hidden = true;
+    if (hint) hint.hidden = true;
 
     const now = new Date();
-    const normalized = events
-      .map((e, idx) => normalizeEvent(e, idx))
+    const normalized = list
+      .map((e, idx) => normalizeEventForYourJson(e, idx, now))
       .filter(Boolean);
 
-    // 讓「即將到來」排前面（依 startDate），沒有日期的排最後
+    // 排序：進行中 -> 即將 -> 既往 -> 未知
     normalized.sort((a, b) => {
+      const pa = getPriority(a.status);
+      const pb = getPriority(b.status);
+      if (pa !== pb) return pa - pb;
+
+      // 同狀態再以 startDate（有的排前面）
       const ad = a.startDate ? a.startDate.getTime() : Number.POSITIVE_INFINITY;
       const bd = b.startDate ? b.startDate.getTime() : Number.POSITIVE_INFINITY;
       return ad - bd;
     });
 
     const frag = document.createDocumentFragment();
-    normalized.forEach((ev, i) => {
-      const card = renderEventCard(ev, now, i);
-      frag.appendChild(card);
-    });
+    normalized.forEach((ev, i) => frag.appendChild(renderEventCard(ev, i)));
     grid.appendChild(frag);
   } catch (err) {
-    hint.hidden = false;
-    hint.textContent = "活動資料讀取失敗，請確認 data/events.json 是否存在。";
+    if (hint) {
+      hint.hidden = false;
+      hint.textContent = "活動資料讀取失敗，請確認 data/events.json 是否存在且格式正確。";
+    }
   }
 }
 
-/** 事件資料整理（允許你 JSON 欄位缺少） */
-function normalizeEvent(raw, idx) {
-  if (!raw || typeof raw !== "object") return null;
-
-  const title = String(raw.title ?? raw.name ?? `活動 ${idx + 1}`);
-  const desc = String(raw.description ?? raw.desc ?? "");
-  const location = String(raw.location ?? raw.place ?? "");
-  const link = raw.link ? String(raw.link) : "";
-  const tag = raw.tag ? String(raw.tag) : "";
-
-  const startDate = parseDateSafe(raw.start ?? raw.startDate ?? raw.date ?? "");
-  const endDate = parseDateSafe(raw.end ?? raw.endDate ?? "");
-
-  return { title, desc, location, link, tag, startDate, endDate };
+function getPriority(status) {
+  return status === "ongoing" ? 0
+    : status === "upcoming" ? 1
+    : status === "past" ? 2
+    : 3; // unknown
 }
 
-/** 解析 YYYY-MM-DD 或 ISO */
-function parseDateSafe(v) {
+/** ✅ 針對你 JSON 格式的整理 */
+function normalizeEventForYourJson(raw, idx, now) {
+  if (!raw || typeof raw !== "object") return null;
+
+  const title = String(raw.title ?? `活動 ${idx + 1}`);
+  const description = String(raw.description ?? "");
+  const location = String(raw.location ?? "");
+  const tag = String(raw.tag ?? "");
+  const link = raw.link ? String(raw.link) : "";
+
+  const startRaw = String(raw.start ?? "");
+  const endRaw = String(raw.end ?? "");
+
+  const startDate = parseEventDate(startRaw, now);
+  const endDate = parseEventDate(endRaw, now);
+
+  const status = getStatus({ startDate, endDate, startRaw, endRaw }, now);
+
+  return {
+    title,
+    description,
+    location,
+    tag,
+    link,
+    startRaw,
+    endRaw,
+    startDate,
+    endDate,
+    status
+  };
+}
+
+/**
+ * 解析你 events.json 的時間格式：
+ * - "即日起" => now
+ * - "2026-02-15 22:00(UTC+8)" => 轉成 ISO with +08:00
+ * - "2026-02-15 22:00" (沒時區) => 當作 +08:00
+ * - 空字串 => null
+ */
+function parseEventDate(input, now) {
+  const v = String(input || "").trim();
   if (!v) return null;
-  const d = new Date(v);
+
+  if (v === "即日起" || v === "即日" || v === "現在") {
+    return new Date(now.getTime());
+  }
+
+  // 轉換 "(UTC+8)" / "(UTC+8:00)" -> "+08:00"
+  let s = v.replace(/\(UTC\+?8(?::00)?\)/gi, "+08:00");
+
+  // "YYYY-MM-DD HH:mm" -> "YYYY-MM-DDTHH:mm"
+  // "YYYY-MM-DD HH:mm+08:00" -> "YYYY-MM-DDTHH:mm+08:00"
+  if (/^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}/.test(s)) {
+    s = s.replace(" ", "T");
+  }
+
+  // 若是 "YYYY-MM-DDTHH:mm" 沒有時區，預設補 +08:00
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(s)) {
+    s = `${s}+08:00`;
+  }
+
+  // 若是只有日期 "YYYY-MM-DD" 也可解析（預設當地 00:00）
+  const d = new Date(s);
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
+/** 狀態：過往 / 即將 / 進行中 / 未知 */
+function getStatus(ev, now) {
+  const s = ev.startDate;
+  const e = ev.endDate;
+
+  // start/end 都沒有 => unknown（像「敬請期待」）
+  if (!s && !e) return "unknown";
+
+  // 有 start，沒 end：start <= now => ongoing；start > now => upcoming
+  if (s && !e) return s.getTime() > now.getTime() ? "upcoming" : "ongoing";
+
+  // 沒 start，有 end：now <= end => ongoing；now > end => past
+  if (!s && e) return now.getTime() > e.getTime() ? "past" : "ongoing";
+
+  // start/end 都有
+  if (s && e) {
+    if (now.getTime() < s.getTime()) return "upcoming";
+    if (now.getTime() > e.getTime()) return "past";
+    return "ongoing";
+  }
+
+  return "unknown";
+}
+
+/** 顯示用：有解析到就顯示格式化日期，解析不到就回傳原字串 */
+function displayDate(raw, dateObj) {
+  const rawText = String(raw || "").trim();
+  if (dateObj) return formatDate(dateObj);
+  return rawText; // 例如：你真的想顯示「即日起」
+}
+
 function formatDate(d) {
-  if (!d) return "";
-  // 以 zh-Hant 顯示日期
   try {
     return new Intl.DateTimeFormat("zh-Hant", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
-      weekday: "short"
+      hour: "2-digit",
+      minute: "2-digit",
+      weekday: "short",
+      hour12: false
     }).format(d);
   } catch {
-    return d.toISOString().slice(0, 10);
+    return d.toISOString();
   }
 }
 
-/** 判斷狀態：過往 / 即將 / 進行中 */
-function getStatus(ev, now) {
-  const s = ev.startDate;
-  const e = ev.endDate;
-
-  if (s && s.getTime() > now.getTime()) return "upcoming";
-  if (s && e && s.getTime() <= now.getTime() && now.getTime() <= e.getTime()) return "ongoing";
-  if (s && s.getTime() <= now.getTime()) return "past";
-  return "unknown";
-}
-
-function renderEventCard(ev, now, index) {
-  const status = getStatus(ev, now);
-
+function renderEventCard(ev, index) {
   const article = document.createElement("article");
-  article.className = `event-card status-${status}`;
-  article.style.setProperty("--step", String(index)); // 給 CSS 做階梯位移用
+  article.className = `event-card status-${ev.status}`;
+  article.style.setProperty("--step", String(index));
 
   const header = document.createElement("div");
   header.className = "event-card__header";
@@ -191,9 +288,9 @@ function renderEventCard(ev, now, index) {
   const badge = document.createElement("span");
   badge.className = "event-card__badge";
   badge.textContent =
-    status === "upcoming" ? "即將到來" :
-    status === "ongoing" ? "進行中" :
-    status === "past" ? "既往活動" : "活動";
+    ev.status === "upcoming" ? "即將到來" :
+    ev.status === "ongoing" ? "進行中" :
+    ev.status === "past" ? "既往活動" : "預告";
 
   header.appendChild(h3);
   header.appendChild(badge);
@@ -201,38 +298,21 @@ function renderEventCard(ev, now, index) {
   const meta = document.createElement("div");
   meta.className = "event-card__meta";
 
-  const dateText = [ev.startDate ? formatDate(ev.startDate) : "", ev.endDate ? formatDate(ev.endDate) : ""]
-    .filter(Boolean)
-    .join(" ～ ");
+  const startText = displayDate(ev.startRaw, ev.startDate);
+  const endText = displayDate(ev.endRaw, ev.endDate);
 
-  if (dateText) {
-    const p = document.createElement("p");
-    p.className = "event-card__row";
-    p.innerHTML = `<span class="k">日期</span><span class="v">${escapeHtml(dateText)}</span>`;
-    meta.appendChild(p);
-  }
-
-  if (ev.location) {
-    const p = document.createElement("p");
-    p.className = "event-card__row";
-    p.innerHTML = `<span class="k">地點</span><span class="v">${escapeHtml(ev.location)}</span>`;
-    meta.appendChild(p);
-  }
-
-  if (ev.tag) {
-    const p = document.createElement("p");
-    p.className = "event-card__row";
-    p.innerHTML = `<span class="k">分類</span><span class="v">${escapeHtml(ev.tag)}</span>`;
-    meta.appendChild(p);
-  }
+  const dateText = [startText, endText].filter(Boolean).join(" ～ ");
+  if (dateText) meta.appendChild(makeRow("日期", dateText));
+  if (ev.location) meta.appendChild(makeRow("地點", ev.location));
+  if (ev.tag) meta.appendChild(makeRow("分類", ev.tag));
 
   const body = document.createElement("div");
   body.className = "event-card__body";
 
-  if (ev.desc) {
+  if (ev.description) {
     const p = document.createElement("p");
     p.className = "event-card__desc";
-    p.textContent = ev.desc;
+    p.textContent = ev.description;
     body.appendChild(p);
   }
 
@@ -251,6 +331,13 @@ function renderEventCard(ev, now, index) {
   article.appendChild(body);
 
   return article;
+}
+
+function makeRow(k, v) {
+  const p = document.createElement("p");
+  p.className = "event-card__row";
+  p.innerHTML = `<span class="k">${escapeHtml(k)}</span><span class="v">${escapeHtml(v)}</span>`;
+  return p;
 }
 
 function escapeHtml(str) {
