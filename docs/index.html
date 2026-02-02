@@ -4,35 +4,25 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>錢包比臉薄｜百業首頁</title>
-
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
-<body>
+
+<body class="page-home">
   <!-- 背景音樂 -->
   <audio id="bgm" preload="auto" loop playsinline>
     <source src="assets/sounds/index.mp3" type="audio/mpeg" />
   </audio>
 
-<header class="top-logo">
-  <img
-    class="logo-main"
-    src="assets/img/WTTF-LOGO.png"
-    alt="錢包比臉薄 LOGO"
-  />
+  <!-- LOGO 置中置頂 -->
+  <header class="top-logo">
+    <img class="logo-main" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
 
-  <div class="top-actions">
-    <button
-      id="muteBtn"
-      class="btn btn-ghost"
-      type="button"
-      aria-pressed="false"
-      title="靜音 / 取消靜音"
-    >
-      🔊 聲音：開
-    </button>
-  </div>
-</header>
-
+    <div class="top-actions">
+      <button id="muteBtn" class="btn btn-ghost" type="button" aria-pressed="false" title="靜音 / 取消靜音">
+        🔊 聲音：開
+      </button>
+    </div>
+  </header>
 
   <main class="container">
     <section class="card hero">
@@ -71,7 +61,55 @@
     <small>© 錢包比臉薄</small>
   </footer>
 
-  <script src="assets/js/app-index.js"></script>
+  <script>
+    (() => {
+      const audio = document.getElementById("bgm");
+      const muteBtn = document.getElementById("muteBtn");
+      const hint = document.getElementById("autoplayHint");
+
+      // 0~1 線性音量，使用 0.15 作為「偏小聲」預設
+      audio.volume = 0.15;
+
+      function setMuted(isMuted) {
+        audio.muted = isMuted;
+        muteBtn.setAttribute("aria-pressed", String(isMuted));
+        muteBtn.textContent = isMuted ? "🔇 聲音：關" : "🔊 聲音：開";
+      }
+
+      setMuted(false);
+
+      async function tryAutoplay() {
+        try {
+          await audio.play();
+          hint.hidden = true;
+        } catch (e) {
+          hint.hidden = false;
+        }
+      }
+
+      muteBtn.addEventListener("click", async () => {
+        setMuted(!audio.muted);
+        try {
+          await audio.play();
+          hint.hidden = true;
+        } catch (e) {
+          hint.hidden = false;
+        }
+      });
+
+      document.addEventListener("pointerdown", async () => {
+        if (audio.paused) {
+          try {
+            await audio.play();
+            hint.hidden = true;
+          } catch (e) {
+            hint.hidden = false;
+          }
+        }
+      }, { once: true });
+
+      tryAutoplay();
+    })();
+  </script>
 </body>
 </html>
-
