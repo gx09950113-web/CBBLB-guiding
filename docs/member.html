@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>錢包比臉薄｜成員</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body class="page-member">
+
+  <main class="member-layout">
+    <!-- 左側：社主/副社主（PC 真固定） -->
+    <aside class="leader-rail" aria-label="社主與副社主">
+      <div class="leader-stack" id="leaderStack"></div>
+    </aside>
+
+    <!-- 右側：分類（手風琴） -->
+    <section class="group-area" aria-label="成員分類">
+      <h1 class="member-title">成員</h1>
+      <div class="group-list" id="groupList"></div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal" id="memberModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalName">
+      <button class="modal-close" type="button" data-close aria-label="關閉">✕</button>
+
+      <div class="modal-body">
+        <div class="modal-header">
+          <img id="modalImg" class="modal-avatar" src="" alt="" />
+          <div>
+            <h2 id="modalName" class="modal-name"></h2>
+            <p id="modalTitle" class="modal-role"></p>
+          </div>
+        </div>
+
+        <p id="modalBio" class="modal-bio"></p>
+        <div id="modalLinks" class="modal-links"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DATA_URL = "assets/data/members.json";
+
+    // ✅ 分類順序：完全照你列的串文
+    const GROUP_ORDER = [
+      { name: "海月", count: 1 },
+      { name: "修羅", count: 5 },
+      { name: "麒麟", count: 4 },
+      { name: "龍驤", count: 5 },
+      { name: "虎賁", count: 5 },
+      { name: "鳳鳴", count: 5 },
+      { name: "神威", count: 5 },
+      { name: "花瓶", count: 3 }
+    ];
+
+    const leaderStack = document.getElementById("leaderStack");
+    const groupList = document.getElementById("groupList");
+
+    // 供點卡片時快速開 modal
+    let membersIndex = null;
+
+    async function loadData() {
+      const res = await fetch(DATA_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("members.json 讀取失敗");
+      return await res.json();
+    }
+
+    function cardButton(member) {
+      const btn = document.createElement("button");
+      btn.className = "member-card";
+      btn.type = "button";
+      btn.dataset.memberId = member.id;
+      btn.setAttribute("aria-label", `查看成員：${member.name || member.id}`);
+
+      const img = document.createElement("img");
+      img.src = member.image || "";
+      img.alt = "";
+      img.loading = "lazy";
+
+      btn.appendChild(img);
+      return btn;
+    }
+
+    function renderLeaders(leaders) {
+      leaderStack.innerHTML = "";
+      leaders.forEach(m => leaderStack.appendChild(cardButton(m)));
+    }
+
+    function renderGroups(members) {
+      groupList.innerHTML = "";
+
+      // group -> members[]
+      const byGroup = new Map();
+      members.forEach(m => {
+        const g = m.group || "未分類";
+        if (!byGroup.has(g)) byGroup.set(g, []);
+        byGroup.get(g).push(m);
+      });
+
+      GROUP_ORDER.forEach(({ name, count }) => {
+        const list = byGroup.get(name) || [];
+
+        const details = document.createElement("details");
+        details.className = "group-item";
+        details.dataset.group = name;
+
+        const summary = document.createElement("summary");
+        summary.className = "group-summary";
+
+        const left = document.createElement("span");
+        left.className = "group-name";
+        left.textContent = name;
+
+        const right = document.createElement("span");
+        right.className = "group-meta";
+        right.textContent = `${list.length}/${count}`;
+
+        summary.appendChild(left);
+        summary.appendChild(right);
+
+        const grid = document.createElement("div");
+        grid.className = "member-grid member-grid--group";
+
+        list.forEach(m => grid.appendChild(cardButton(m)));
+
+        details.appendChild(summary);
+        details.appendChild(grid);
+        groupList.appendChild(details);
+      });
+    }
+
+    // ✅ 手風琴：同時只開一個分類
+    function enableAccordion() {
+      groupList.addEventListener("toggle", (e) => {
+        const cur = e.target;
+        if (!(cur instanceof HTMLDetailsElement)) return;
+        if (!cur.open) return;
+
+        [...groupList.querySelectorAll("details.group-item")].forEach(d => {
+          if (d !== cur) d.open = false;
+        });
+      }, true);
+    }
+
+    // ===== Modal（沿用你前面的需求：點卡片才讀 JSON 顯示介紹）=====
+    const modal = document.getElementById("memberModal");
+    const modalImg = document.getElementById("modalImg");
+    const modalName = document.getElementById("modalName");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalBio = document.getElementById("modalBio");
+    const modalLinks = document.getElementById("modalLinks");
+    let lastFocusEl = null;
+
+    function openModal(member) {
+      lastFocusEl = document.activeElement;
+
+      modalImg.src = member.image || "";
+      modalImg.alt = member.name ? `${member.name} 頭像` : "成員圖片";
+      modalName.textContent = member.name || "";
+      modalTitle.textContent = member.title || member.group || "";
+      modalBio.textContent = member.bio || "";
+
+      modalLinks.innerHTML = "";
+      (member.links || []).forEach(link => {
+        const a = document.createElement("a");
+        a.href = link.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.className = "modal-link";
+        a.textContent = link.label || link.url;
+        modalLinks.appendChild(a);
+      });
+
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      modal.querySelector("[data-close]").focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      if (lastFocusEl) lastFocusEl.focus();
+    }
+
+    document.addEventListener("click", (e) => {
+      // close modal
+      const closeBtn = e.target.closest("[data-close]");
+      if (closeBtn && modal.classList.contains("is-open")) {
+        closeModal();
+        return;
+      }
+
+      // open member modal
+      const card = e.target.closest(".member-card");
+      if (!card) return;
+
+      const id = card.dataset.memberId;
+      const member = membersIndex?.[id];
+      if (member) openModal(member);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
+    });
+
+    // ===== init =====
+    (async function init() {
+      const data = await loadData();
+
+      const leaders = data.leaders || [];
+      const members = data.members || [];
+
+      // 建索引：leaders + members 全都能點開
+      const all = [...leaders, ...members];
+      membersIndex = Object.fromEntries(all.map(m => [m.id, m]));
+
+      renderLeaders(leaders);
+      renderGroups(members);
+      enableAccordion();
+    })().catch(console.error);
+  </script>
+</body>
+</html>
