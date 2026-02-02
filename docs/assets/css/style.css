@@ -82,7 +82,7 @@ body {
 
 /* 通用 LOGO 預設（非 members 時） */
 .logo-main {
-  width: clamp(160px, 55vw, 360px);
+  width: clamp(96px, 16vw, 168px);
   height: auto;
   display: block;
   margin: 0 auto;
@@ -599,3 +599,4 @@ body {
     linear-gradient(180deg, rgba(0,0,0,.62), rgba(0,0,0,.78)),
     url("../img/events-bg.png") center / cover no-repeat fixed;
 }
+
