@@ -890,3 +890,11 @@ body {
   padding-bottom: calc(18px + var(--bottom-nav-h));
 }
 
+/* =========================
+   Footer 避讓 Bottom Nav（避免被浮條蓋住）
+========================= */
+.footer,
+.site-footer{
+  padding-bottom: calc(26px + var(--bottom-nav-h)) !important;
+}
+
