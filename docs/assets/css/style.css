@@ -9,6 +9,7 @@
       - 「活躍成員」固定在 leaders 下方、列表上方（不滾動）
       - 分類浮框：總寬固定 772px，展開高度自適應
    ✅ Events：保留（如有用到）
+   ✅ Bottom Nav：共用底部導覽（各頁 current 高亮）
 ========================================================= */
 
 /* =========================
@@ -46,6 +47,9 @@
 
   /* Hover 光暈顏色 */
   --glow-red: rgba(255, 60, 60, 0.85);
+
+  /* ✅ Bottom Nav 高度（用來做底部安全距離） */
+  --bottom-nav-h: 86px;
 }
 
 * { box-sizing: border-box; }
@@ -836,4 +840,104 @@ body {
   opacity: .95;
 }
 
+/* =========================================================
+   8) Bottom Nav（共用底部導覽）
+========================================================= */
+.bottom-nav{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
 
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+
+  padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(10, 10, 18, .72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border-top: 1px solid rgba(255,255,255,.14);
+}
+
+.bn-item{
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+
+  padding: 10px 6px;
+  border-radius: 14px;
+
+  color: rgba(255,255,255,.92);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+
+  transition: transform .12s ease, background .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+
+.bn-item:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.09);
+  border-color: rgba(255,255,255,.18);
+  box-shadow: 0 10px 22px rgba(0,0,0,.25);
+}
+
+.bn-ico{
+  font-size: 18px;
+  line-height: 1;
+}
+
+.bn-txt{
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.1;
+  opacity: .92;
+  white-space: nowrap;
+}
+
+/* current 狀態 */
+.bn-item.is-current{
+  background: rgba(255, 0, 122, .16);
+  border-color: rgba(255, 0, 122, .45);
+  box-shadow: 0 10px 24px rgba(255, 0, 122, .18);
+  cursor: default;
+}
+.bn-item.is-current:hover{
+  transform: none;
+  box-shadow: 0 10px 24px rgba(255, 0, 122, .18);
+}
+
+/* 小螢幕微調 */
+@media (max-width: 420px){
+  .bottom-nav{ gap: 6px; padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); }
+  .bn-item{ padding: 9px 4px; border-radius: 12px; }
+  .bn-ico{ font-size: 17px; }
+  .bn-txt{ font-size: 11px; }
+}
+
+/* =========================================================
+   9) Bottom Nav 避讓（避免被固定導覽蓋住）
+   - events / schedule 有內嵌 <style>，所以用 !important 保證生效
+========================================================= */
+
+/* Members：只補底部，不動你上方 padding 計算 */
+.page-member{
+  padding-bottom: calc(20px + var(--bottom-nav-h));
+}
+
+/* Events：避免底部被導覽蓋住 */
+.page-events .events-wrap{
+  padding-bottom: calc(56px + var(--bottom-nav-h)) !important;
+}
+
+/* Schedule：避免底部被導覽蓋住（你的 schedule-wrap 多半在 HTML 內嵌 style） */
+.page-schedule .schedule-wrap{
+  padding-bottom: calc(40px + var(--bottom-nav-h)) !important;
+}
+
+/* 若 schedule 用的是 .site-footer（你 schedule.html 是 site-footer）也補一下底部空間 */
+.site-footer{
+  padding-bottom: calc(18px + var(--bottom-nav-h));
+}
