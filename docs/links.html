@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>錢包比臉薄｜外部連結</title>
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- 本頁背景圖（若你想移到 style.css 也可以） -->
+  <style>
+    body.page-links{
+      min-height: 100vh;
+      background: url("assets/img/links-bg.png") center / cover no-repeat fixed;
+    }
+  </style>
+</head>
+
+<body class="page-links">
+  <!-- 背景音樂：Links -->
+  <audio id="bgmLinks" preload="auto" loop playsinline autoplay>
+    <source src="assets/sounds/links.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- LOGO 置中置頂（沿用你既有 top-logo/ logo-main 的 CSS） -->
+  <header class="top-logo">
+    <a class="logo-link" href="index.html" aria-label="回到首頁">
+      <img class="logo-main" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
+    </a>
+
+    <!-- 靜音按鈕（本頁需要） -->
+    <div class="top-actions">
+      <button id="muteBtnLinks" class="btn btn-ghost" type="button" aria-pressed="false" title="靜音 / 取消靜音">
+        🔇 靜音
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-head">
+      <h1 class="page-title">🔗 外部連結</h1>
+      <p class="page-subtitle">用卡片浮框顯示外部連結（自動渲染 JSON）</p>
+    </section>
+
+    <!-- 連結卡片容器 -->
+    <section id="linksGrid" class="links-grid" aria-live="polite"></section>
+
+    <!-- 空狀態 / 錯誤訊息 -->
+    <p id="linksHint" class="hint" hidden></p>
+  </main>
+
+  <!-- 底部導覽，讓玩家好回首頁 -->
+  <nav class="bottom-nav" aria-label="底部導覽">
+    <a class="nav-item" href="index.html">🏠首頁</a>
+    <a class="nav-item" href="philosophy.html">💡百業理念</a>
+    <a class="nav-item" href="events.html">🎉荷包活動</a>
+    <a class="nav-item" href="schedule.html">🗓️百業行程</a>
+    <a class="nav-item is-current" href="links.html" aria-current="page">🔗外部連結</a>
+    <a class="nav-item" href="members.html">👥活躍成員</a>
+  </nav>
+
+  <footer class="site-footer">© 錢包比臉薄</footer>
+
+  <script defer src="assets/js/app-links.js"></script>
+
+  <!-- 讓 autoplay 更有機會成功：第一次互動就嘗試播放 -->
+  <script>
+    window.addEventListener("pointerdown", function once() {
+      const a = document.getElementById("bgmLinks");
+      if (a) a.play().catch(()=>{});
+      window.removeEventListener("pointerdown", once);
+    }, { once: true });
+  </script>
+</body>
+</html>
