@@ -6,7 +6,7 @@
 ========================================================= */
 
 (() => {
-  const DATA_URL = "assets/data/links/links.json";
+  const DATA_URL = "assets/data/links.json";
 
   // ===== DOM =====
   const grid = document.getElementById("linksGrid");
