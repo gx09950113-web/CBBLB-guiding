@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>錢包比臉薄｜百業行程</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Schedule 頁面少量補強樣式（不動你既有 style.css 也能用） -->
+  <style>
+    body.page-schedule{
+      min-height: 100%;
+      background: url("assets/img/schedule-bg.png") center/cover no-repeat fixed;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .schedule-wrap{
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 140px 0 40px; /* 下方留給 footer */
+      display: grid;
+      gap: 14px;
+      justify-items: center;
+      flex: 1; /* 推 footer 到底 */
+    }
+
+    .schedule-card{
+      width: 100%;
+      border-radius: 18px;
+      background: rgba(0,0,0,.42);
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 18px 50px rgba(0,0,0,.45);
+      backdrop-filter: blur(6px);
+      overflow: hidden;
+    }
+
+    .schedule-card-head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .schedule-title{
+      font-size: 18px;
+      letter-spacing: .5px;
+      color: rgba(255,255,255,.92);
+      margin: 0;
+    }
+
+    .schedule-sub{
+      font-size: 14px;
+      color: rgba(255,255,255,.7);
+      margin: 2px 0 0;
+    }
+
+    /* 圖片互動區 */
+    .zoom-viewport{
+      position: relative;
+      width: 100%;
+      height: min(72vh, 760px);
+      background: rgba(0,0,0,.18);
+      overflow: hidden;
+      touch-action: none; /* 讓手機能接管 pinch/drag */
+    }
+
+    .zoom-stage{
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    .schedule-img{
+      width: min(100%, 1100px);
+      height: auto;
+      max-height: 100%;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none; /* 互動交給 viewport */
+      display: block;
+    }
+
+    .hint-row{
+      padding: 10px 16px 14px;
+      font-size: 14px;
+      color: rgba(255,255,255,.75);
+    }
+
+    .hint-row kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(0,0,0,.35);
+      color: rgba(255,255,255,.9);
+      margin: 0 3px;
+    }
+
+    /* footer */
+    .site-footer{
+      text-align: center;
+      padding: 14px 10px 18px;
+      font-size: 14px;
+      color: rgba(255,255,255,.7);
+      text-shadow: 0 1px 10px rgba(0,0,0,.35);
+    }
+
+    @media (max-width: 520px){
+      .schedule-wrap{ padding-top: 120px; }
+      .zoom-viewport{ height: 62vh; }
+      .schedule-img{ width: 100%; }
+    }
+  </style>
+</head>
+
+<body class="page-schedule">
+  <!-- 背景音樂（預設播放，loop） -->
+  <audio id="bgmSchedule" preload="auto" loop playsinline autoplay>
+    <source src="assets/sounds/schedule.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- LOGO 置中置頂（沿用你既有 top-logo 風格） -->
+  <header class="top-logo">
+    <a class="logo-link" href="index.html" aria-label="回到首頁">
+      <img class="logo-main" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
+    </a>
+
+    <!-- 靜音按鈕 -->
+    <div class="top-actions">
+      <button id="muteBtn" class="btn btn-ghost" type="button" aria-pressed="false" title="靜音 / 取消靜音">
+        🔊
+      </button>
+    </div>
+  </header>
+
+  <main class="schedule-wrap">
+    <section class="schedule-card" aria-label="百業行程卡片">
+      <div class="schedule-card-head">
+        <div>
+          <h1 class="schedule-title">百業行程</h1>
+          <p class="schedule-sub" id="monthLabel">—</p>
+        </div>
+
+        <button id="resetZoomBtn" class="btn btn-ghost" type="button" title="重置縮放">
+          重置
+        </button>
+      </div>
+
+      <div id="viewport" class="zoom-viewport">
+        <div id="stage" class="zoom-stage">
+          <img id="scheduleImg" class="schedule-img" src="" alt="行程表" />
+        </div>
+      </div>
+
+      <div class="hint-row">
+        手機：雙指縮放、單指拖曳｜PC：自動適應（可用滑鼠滾輪縮放）
+        <span style="opacity:.6">（<kbd>Reset</kbd> 可回到 100%）</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">© 錢包比臉薄</footer>
+
+  <script src="assets/js/schedule.js"></script>
+</body>
+</html>
