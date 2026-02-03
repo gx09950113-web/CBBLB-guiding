@@ -42,15 +42,17 @@
   </style>
 </head>
 
-<body class="page-philosophy">
+<body class="page-home">
   <!-- 背景音樂 -->
   <audio id="bgm" preload="auto" loop playsinline>
     <source src="assets/sounds/philosophy.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- LOGO 置中置頂（沿用 style.css 的 top-logo / logo-main / top-actions） -->
+  <!-- LOGO 置中置頂（自適應） -->
   <header class="top-logo">
-    <img class="logo-main" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
+    <a class="logo-link" href="index.html" aria-label="回到首頁">
+      <img class="logo-main" src="assets/img/WTTF-LOGO.png" alt="錢包比臉薄 LOGO" />
+    </a>
 
     <div class="top-actions">
       <button id="muteBtn" class="btn btn-ghost" type="button" aria-pressed="false" title="靜音 / 取消靜音">
